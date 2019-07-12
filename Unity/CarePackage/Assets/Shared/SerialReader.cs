@@ -12,6 +12,8 @@ using UnityEngine.Events;
 
 public class SerialReader : MonoBehaviour
 {
+    public string port;
+
     SerialPort stream;
     CancellationTokenSource tokenSource = new CancellationTokenSource();
     ConcurrentQueue<string> queue = new ConcurrentQueue<string>();
@@ -26,7 +28,7 @@ public class SerialReader : MonoBehaviour
         {
             while (!token.IsCancellationRequested)
             {
-                stream = new SerialPort("/dev/cu.usbmodem14601", 115200);
+                stream = new SerialPort(port, 115200);
                 stream.ReadTimeout = 500;
                 stream.WriteTimeout = 500;
 
