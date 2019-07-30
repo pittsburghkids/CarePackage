@@ -6,10 +6,10 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Shared/Main.unity
+    path: Assets/Shared/CarePackageLoader.unity
     guid: b2b750878e81646d9ac9f9042fd0bfea
   - enabled: 1
-    path: Assets/CarePackage/Scenes/CarePackage.unity
+    path: Assets/CarePackageDepot/Scenes/CarePackageDepot.unity
     guid: 5e0eb9ff70cc8400eaef366e7fc4925f
   - enabled: 1
     path: Assets/CarePackageMeter/Scenes/CarePackageMeter.unity

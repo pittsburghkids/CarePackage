@@ -16,6 +16,9 @@ public class CarePackageMeter : MonoBehaviour
 
     public bool boxPresent = false;
 
+    private SerialReader slotReader;
+    private SerialReader boxReader;
+
     public static void Store(string message)
     {
         Debug.Log("STORE: " + message);
@@ -68,6 +71,26 @@ public class CarePackageMeter : MonoBehaviour
             GameObject starInstance = Instantiate(heartPrefab, rootTransform);
             starInstance.name = message;
         }
+    }
+
+    void Start()
+    {
+        CarePackage carePackage = CarePackage.Instance;
+
+        slotReader = new SerialReader(carePackage.carePackageConfig.meterSlot);
+        boxReader = new SerialReader(carePackage.carePackageConfig.meterBox);
+
+        slotReader.OnSerialMessage += InsertItem;
+        boxReader.OnSerialMessage += InsertBox;
+    }
+
+    void OnDestroy()
+    {
+        slotReader.OnSerialMessage -= InsertItem;
+        boxReader.OnSerialMessage -= InsertBox;
+
+        slotReader?.Destroy();
+        boxReader?.Destroy();
     }
 
     void Update()

@@ -1,28 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using System.IO.Ports;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
-using UnityEngine.Events;
 
-[System.Serializable] public class SerialEvent : UnityEvent<string> { }
-
-
-public class SerialReader : MonoBehaviour
+public class SerialReader
 {
-    public string port;
+    public delegate void SerialEvent(string serialMessage);
+    public event SerialEvent OnSerialMessage;
 
     SerialPort stream;
+
     CancellationTokenSource tokenSource = new CancellationTokenSource();
+    CancellationToken token;
+
     ConcurrentQueue<string> queue = new ConcurrentQueue<string>();
 
-    public SerialEvent OnSerialEvent;
-
-    void Start()
+    public SerialReader(string port)
     {
-        CancellationToken token = tokenSource.Token;
+        token = tokenSource.Token;
 
         Task.Run(() =>
         {
@@ -34,7 +30,6 @@ public class SerialReader : MonoBehaviour
 
                 Debug.Log("Opening port.");
                 stream.Open();
-
 
                 while (stream.IsOpen)
                 {
@@ -53,19 +48,26 @@ public class SerialReader : MonoBehaviour
 
             }
         }, token);
+
+        ProcessQueue();
     }
 
-    void Update()
+    async void ProcessQueue()
     {
-        string message;
-        if (queue.TryDequeue(out message))
+        while (!token.IsCancellationRequested)
         {
-            Debug.Log(message);
-            OnSerialEvent?.Invoke(message);
+            string message;
+            if (queue.TryDequeue(out message))
+            {
+                Debug.Log(message);
+                OnSerialMessage?.Invoke(message);
+            }
+
+            await Task.Delay(System.TimeSpan.FromSeconds(.1f));
         }
     }
 
-    void OnDestroy()
+    public void Destroy()
     {
         tokenSource.Cancel();
         if (stream != null) stream.Close();

@@ -1,0 +1,19 @@
+{
+    "meterSlot": "/dev/tty.usbmodem145101",
+    "meterBox": "/dev/tty.usbmodem145201",
+    "depotSlotA": "/dev/tty.usbmodem145301",
+    "depotSlotB": "/dev/tty.usbmodem145401",
+    "boxes": [
+        {
+            "name": "boxA",
+            "ids": [
+                1794330372,
+                1794338052,
+                1794398980,
+                1794330116,
+                1794345476,
+                1794337796
+            ]
+        }
+    ]
+}
