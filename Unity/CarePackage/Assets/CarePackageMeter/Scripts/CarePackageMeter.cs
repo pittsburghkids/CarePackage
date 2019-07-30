@@ -8,6 +8,8 @@ public class CarePackageMeter : MonoBehaviour
 
     [SerializeField] GameObject heartPrefab;
     [SerializeField] GameObject starPrefab;
+    [SerializeField] GameObject shirtPrefab;
+    [SerializeField] GameObject cookiePrefab;
 
     [SerializeField] Animator doorAnimator;
 
@@ -18,60 +20,6 @@ public class CarePackageMeter : MonoBehaviour
 
     private SerialReader slotReader;
     private SerialReader boxReader;
-
-    public static void Store(string message)
-    {
-        Debug.Log("STORE: " + message);
-    }
-
-    public void InsertBox(string message)
-    {
-        int result;
-        if (int.TryParse(message, out result))
-        {
-            if (currentBox != message)
-            {
-                Debug.Log("InsertBox: " + message);
-                currentBox = message;
-                currentBoxTime = Time.time;
-
-                boxPresent = true;
-                doorAnimator.SetBool("Open", boxPresent);
-            }
-
-            if (currentBox == message)
-            {
-                currentBoxTime = Time.time;
-            }
-        }
-    }
-
-    public void InsertItem(string message)
-    {
-        if (message == "1778588676")
-        {
-            GameObject heartInstance = Instantiate(heartPrefab, rootTransform);
-            heartInstance.name = message;
-        }
-
-        if (message == "1778530052")
-        {
-            GameObject heartInstance = Instantiate(heartPrefab, rootTransform);
-            heartInstance.name = message;
-        }
-
-        if (message == "1778588420")
-        {
-            GameObject starInstance = Instantiate(heartPrefab, rootTransform);
-            starInstance.name = message;
-        }
-
-        if (message == "1778646020")
-        {
-            GameObject starInstance = Instantiate(heartPrefab, rootTransform);
-            starInstance.name = message;
-        }
-    }
 
     void Start()
     {
@@ -84,15 +32,6 @@ public class CarePackageMeter : MonoBehaviour
         boxReader.OnSerialMessage += InsertBox;
     }
 
-    void OnDestroy()
-    {
-        slotReader.OnSerialMessage -= InsertItem;
-        boxReader.OnSerialMessage -= InsertBox;
-
-        slotReader?.Destroy();
-        boxReader?.Destroy();
-    }
-
     void Update()
     {
         if (currentBox != null && (Time.time - currentBoxTime) > .5f)
@@ -103,24 +42,73 @@ public class CarePackageMeter : MonoBehaviour
             Debug.Log("Box removed");
             currentBox = null;
         }
+    }
 
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+    void OnTriggerEnter2D(Collider2D collider)
+    {
+        CarePackage.Instance.Store(currentBox, collider.gameObject.name);
+    }
+
+    void OnDestroy()
+    {
+        slotReader.OnSerialMessage -= InsertItem;
+        boxReader.OnSerialMessage -= InsertBox;
+
+        slotReader?.Destroy();
+        boxReader?.Destroy();
+    }
+
+    public void InsertBox(string message)
+    {
+        string boxName = CarePackage.Instance.GetBoxByID(message);
+        if (boxName != null)
         {
-            GameObject heartInstance = Instantiate(heartPrefab, rootTransform);
-            heartInstance.name = "1778588676";
-        }
+            if (currentBox != boxName)
+            {
+                Debug.Log("InsertBox: " + boxName);
+                currentBox = boxName;
+                currentBoxTime = Time.time;
 
-        if (Input.GetKeyDown(KeyCode.Alpha2))
+                boxPresent = true;
+                doorAnimator.SetBool("Open", boxPresent);
+            }
+
+            if (currentBox == boxName)
+            {
+                currentBoxTime = Time.time;
+            }
+        }
+    }
+
+    public void InsertItem(string message)
+    {
+        string itemName = CarePackage.Instance.GetItemByID(message);
+        if (itemName != null)
         {
-            GameObject starInstance = Instantiate(starPrefab, rootTransform);
-            starInstance.name = "1778588420";
-        }
 
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            boxPresent = !boxPresent;
-            doorAnimator.SetBool("Open", boxPresent);
-        }
+            if (itemName == "heart")
+            {
+                GameObject itemInstance = Instantiate(heartPrefab, rootTransform);
+                itemInstance.name = itemName;
+            }
 
+            if (itemName == "star")
+            {
+                GameObject itemInstance = Instantiate(starPrefab, rootTransform);
+                itemInstance.name = itemName;
+            }
+
+            if (itemName == "shirt")
+            {
+                GameObject itemInstance = Instantiate(shirtPrefab, rootTransform);
+                itemInstance.name = itemName;
+            }
+
+            if (itemName == "cookie")
+            {
+                GameObject itemInstance = Instantiate(cookiePrefab, rootTransform);
+                itemInstance.name = itemName;
+            }
+        }
     }
 }

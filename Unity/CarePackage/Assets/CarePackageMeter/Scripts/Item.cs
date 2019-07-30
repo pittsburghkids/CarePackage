@@ -29,11 +29,5 @@ public class Item : MonoBehaviour
         {
             velocity = new Vector3(Random.Range(-.5f, .5f), .5f, 0);
         }
-
-        if (collider.gameObject.name.StartsWith("Box"))
-        {
-            CarePackageMeter.Store(name);
-        }
-
     }
 }

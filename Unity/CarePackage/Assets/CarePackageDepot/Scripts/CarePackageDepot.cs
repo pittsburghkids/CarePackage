@@ -7,12 +7,14 @@ public class CarePackageDepot : MonoBehaviour
 {
     [SerializeField] GameObject packagePrefab;
 
+    private CarePackage carePackage;
+
     private SerialReader slotReaderA;
     private SerialReader slotReaderB;
 
     void Start()
     {
-        CarePackage carePackage = CarePackage.Instance;
+        carePackage = CarePackage.Instance;
 
         slotReaderA = new SerialReader(carePackage.carePackageConfig.depotSlotA);
         slotReaderB = new SerialReader(carePackage.carePackageConfig.depotSlotB);
@@ -32,9 +34,12 @@ public class CarePackageDepot : MonoBehaviour
 
     public void Delivery(string message)
     {
-        if (message.StartsWith("1794"))
+        string boxName = CarePackage.Instance.GetBoxByID(message);
+
+        if (boxName != null)
         {
-            Instantiate(packagePrefab);
+            GameObject instance = Instantiate(packagePrefab);
+            instance.name = boxName;
         }
     }
 }
