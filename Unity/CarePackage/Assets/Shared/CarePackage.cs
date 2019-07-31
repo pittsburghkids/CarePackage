@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
+// Data structure for items in config.json.
 [System.Serializable]
 public class CarePackageItemConfig
 {
@@ -10,6 +11,7 @@ public class CarePackageItemConfig
     public int[] ids;
 }
 
+// Data structure for boxes in config.json.
 [System.Serializable]
 public class CarePackageBoxConfig
 {
@@ -17,6 +19,7 @@ public class CarePackageBoxConfig
     public int[] ids;
 }
 
+// Data structure for config.json.
 [System.Serializable]
 public class CarePackageConfig
 {
@@ -31,10 +34,17 @@ public class CarePackageConfig
 
 public class CarePackage : MonoBehaviour
 {
+    // Config object loaded from config.json.
     public CarePackageConfig carePackageConfig;
 
+    // Storage map for items placed in boxes.
     private Dictionary<string, List<string>> storageMap = new Dictionary<string, List<string>>();
 
+    // Sprite map for items.
+
+    private Dictionary<string, Sprite> spriteMap = new Dictionary<string, Sprite>();
+
+    // Singleton creation.
     private static CarePackage instance;
     public static CarePackage Instance
     {
@@ -53,7 +63,8 @@ public class CarePackage : MonoBehaviour
 
     void Awake()
     {
-        string path = Path.Combine(Application.dataPath, "config.json");
+        // Load configuration from config.json.
+        string path = Path.Combine(Application.streamingAssetsPath, "config.json");
 
         if (File.Exists(path))
         {
@@ -62,8 +73,33 @@ public class CarePackage : MonoBehaviour
 
             Debug.Log("CarePackageConfig loaded.");
         }
+
+        // Load item sprites.
+        foreach (CarePackageItemConfig carePackageItem in carePackageConfig.items)
+        {
+            string itemFileName = carePackageItem.name + ".png";
+            string itemFilePath = Path.Combine(Application.streamingAssetsPath, "items");
+            itemFilePath = Path.Combine(itemFilePath, itemFileName);
+
+            if (File.Exists(itemFilePath))
+            {
+                // Load texture from file.
+                byte[] itemBytes = File.ReadAllBytes(itemFilePath);
+                Texture2D itemTexture = new Texture2D(2, 2);
+                itemTexture.LoadImage(itemBytes);
+
+                // Create and store sprite.
+                Sprite itemSprite = Sprite.Create(itemTexture, new Rect(0, 0, itemTexture.width, itemTexture.height), new Vector2(.5f, .5f), 4000);
+                spriteMap.Add(carePackageItem.name, itemSprite);
+            }
+            else
+            {
+                Debug.LogWarningFormat("File not found: {0}", itemFileName);
+            }
+        }
     }
 
+    // "Store" item in given box.
     public void Store(string box, string item)
     {
         Debug.LogFormat("Storing {0} in {1}", item, box);
@@ -76,6 +112,7 @@ public class CarePackage : MonoBehaviour
         storageMap[box].Add(item);
     }
 
+    // Remove all items from box.
     public void EmptyBox(string boxName)
     {
         if (boxName != null && storageMap.ContainsKey(boxName))
@@ -84,6 +121,7 @@ public class CarePackage : MonoBehaviour
         }
     }
 
+    // Return a list of items stored in a box.
     public List<string> GetItemsInBox(string boxName)
     {
         if (boxName != null && storageMap.ContainsKey(boxName))
@@ -94,6 +132,7 @@ public class CarePackage : MonoBehaviour
         return null;
     }
 
+    // Find box by side ID from config.json.
     public string GetBoxByID(string id)
     {
         int sideID = -1;
@@ -102,6 +141,7 @@ public class CarePackage : MonoBehaviour
         return GetBoxByID(sideID);
     }
 
+    // Find box by side ID from config.json.
     public string GetBoxByID(int id)
     {
         foreach (CarePackageBoxConfig carePackageBox in carePackageConfig.boxes)
@@ -117,6 +157,7 @@ public class CarePackage : MonoBehaviour
         return null;
     }
 
+    // Find item by side ID from config.json.
     public string GetItemByID(string id)
     {
         int sideID = -1;
@@ -125,6 +166,7 @@ public class CarePackage : MonoBehaviour
         return GetItemByID(sideID);
     }
 
+    // Find item by side ID from config.json.
     public string GetItemByID(int id)
     {
         foreach (CarePackageItemConfig carePackageItem in carePackageConfig.items)
@@ -136,6 +178,16 @@ public class CarePackage : MonoBehaviour
                     return carePackageItem.name;
                 }
             }
+        }
+        return null;
+    }
+
+    // Get sprite image for item name.
+    public Sprite GetSpriteForItemName(string itemName)
+    {
+        if (spriteMap.ContainsKey(itemName))
+        {
+            return spriteMap[itemName];
         }
         return null;
     }
