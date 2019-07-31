@@ -59,11 +59,10 @@ public class SerialReader
             string message;
             if (queue.TryDequeue(out message))
             {
-                Debug.Log(message);
+                //Debug.Log(message);
                 OnSerialMessage?.Invoke(message);
             }
-
-            await Task.Delay(System.TimeSpan.FromSeconds(.1f));
+            await Task.Delay(System.TimeSpan.FromSeconds(1 / 30f));
         }
     }
 

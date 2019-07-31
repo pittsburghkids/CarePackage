@@ -4,14 +4,9 @@ using UnityEngine;
 
 public class CarePackageMeter : MonoBehaviour
 {
-    [SerializeField] Transform rootTransform;
-
-    [SerializeField] GameObject heartPrefab;
-    [SerializeField] GameObject starPrefab;
-    [SerializeField] GameObject shirtPrefab;
-    [SerializeField] GameObject cookiePrefab;
-
-    [SerializeField] Animator doorAnimator;
+    [SerializeField] Transform rootTransform = default;
+    [SerializeField] GameObject itemPrefab = default;
+    [SerializeField] Animator doorAnimator = default;
 
     string currentBox = null;
     float currentBoxTime = 0;
@@ -58,6 +53,7 @@ public class CarePackageMeter : MonoBehaviour
         boxReader?.Destroy();
     }
 
+    // New box inserted into slot.
     public void InsertBox(string message)
     {
         string boxName = CarePackage.Instance.GetBoxByID(message);
@@ -80,35 +76,19 @@ public class CarePackageMeter : MonoBehaviour
         }
     }
 
+    // New item inserted into slot.
     public void InsertItem(string message)
     {
         string itemName = CarePackage.Instance.GetItemByID(message);
         if (itemName != null)
         {
+            GameObject itemInstance = Instantiate(itemPrefab, rootTransform);
 
-            if (itemName == "heart")
-            {
-                GameObject itemInstance = Instantiate(heartPrefab, rootTransform);
-                itemInstance.name = itemName;
-            }
+            Sprite itemSprite = CarePackage.Instance.GetSpriteForItemName(itemName);
+            SpriteRenderer spriteRenderer = itemInstance.GetComponent<SpriteRenderer>();
+            spriteRenderer.sprite = itemSprite;
 
-            if (itemName == "star")
-            {
-                GameObject itemInstance = Instantiate(starPrefab, rootTransform);
-                itemInstance.name = itemName;
-            }
-
-            if (itemName == "shirt")
-            {
-                GameObject itemInstance = Instantiate(shirtPrefab, rootTransform);
-                itemInstance.name = itemName;
-            }
-
-            if (itemName == "cookie")
-            {
-                GameObject itemInstance = Instantiate(cookiePrefab, rootTransform);
-                itemInstance.name = itemName;
-            }
+            itemInstance.name = itemName;
         }
     }
 }
