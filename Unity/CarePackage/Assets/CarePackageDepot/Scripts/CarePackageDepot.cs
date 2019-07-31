@@ -5,7 +5,7 @@ using System.IO;
 
 public class CarePackageDepot : MonoBehaviour
 {
-    [SerializeField] GameObject packagePrefab;
+    [SerializeField] GameObject packagePrefab = default;
 
     private CarePackage carePackage;
 
