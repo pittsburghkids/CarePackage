@@ -22,9 +22,9 @@ public class SceneLoader : MonoBehaviour
         // Configure external displays.
         Debug.Log("DISPLAYS:" + Display.displays.Length);
 
-        // // if (Display.displays.Length > 1)
-        // // {
-        // Display.displays[1].Activate();
-        // //}
+        if (Display.displays.Length > 1)
+        {
+            Display.displays[1].Activate();
+        }
     }
 }

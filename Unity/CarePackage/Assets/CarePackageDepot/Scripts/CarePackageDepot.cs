@@ -5,41 +5,94 @@ using System.IO;
 
 public class CarePackageDepot : MonoBehaviour
 {
+
+    [SerializeField] Transform moverContainer = default;
     [SerializeField] GameObject packagePrefab = default;
+    [SerializeField] GameObject moverPrefab = default;
+    [SerializeField] Animator depotAnimator = default;
 
     private CarePackage carePackage;
+    private SerialReader slotReader;
 
-    private SerialReader slotReaderA;
-    private SerialReader slotReaderB;
+    private Queue<string> deliveryQueue = new Queue<string>();
+    float lastDelivery = 0;
+
+    // Singleton creation.
+    private static CarePackageDepot instance;
+    public static CarePackageDepot Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = FindObjectOfType<CarePackageDepot>();
+            }
+
+            return instance;
+        }
+    }
 
     void Start()
     {
         carePackage = CarePackage.Instance;
 
-        slotReaderA = new SerialReader(carePackage.carePackageConfig.depotSlotA);
-        slotReaderB = new SerialReader(carePackage.carePackageConfig.depotSlotB);
+        slotReader = new SerialReader(carePackage.carePackageConfig.depotSlot);
 
-        slotReaderA.OnSerialMessage += Delivery;
-        slotReaderB.OnSerialMessage += Delivery;
+        slotReader.OnSerialMessage += Delivery;
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Delivery("1794330372");
+        }
+
+        //
+
+        if (Time.time - lastDelivery > 1)
+        {
+            if (deliveryQueue.Count > 0)
+            {
+                string message = deliveryQueue.Dequeue();
+                string boxName = CarePackage.Instance.GetBoxByID(message);
+
+                if (boxName != null)
+                {
+                    GameObject packageInstance = Instantiate(packagePrefab);
+                    packageInstance.name = boxName;
+
+                    GameObject moverInstance = Instantiate(moverPrefab, moverContainer);
+                    Mover mover = moverInstance.GetComponent<Mover>();
+                    mover.GetPackage(packageInstance);
+                }
+
+                lastDelivery = Time.time;
+            }
+        }
+
     }
 
     void OnDestroy()
     {
-        slotReaderA.OnSerialMessage -= Delivery;
-        slotReaderB.OnSerialMessage += Delivery;
+        slotReader.OnSerialMessage -= Delivery;
 
-        slotReaderA?.Destroy();
-        slotReaderB?.Destroy();
+        slotReader?.Destroy();
     }
 
     public void Delivery(string message)
     {
-        string boxName = CarePackage.Instance.GetBoxByID(message);
-
-        if (boxName != null)
-        {
-            GameObject instance = Instantiate(packagePrefab);
-            instance.name = boxName;
-        }
+        deliveryQueue.Enqueue(message);
     }
+
+    public void OpenDoor()
+    {
+        depotAnimator.SetBool("Open", true);
+    }
+
+    public void CloseDoor()
+    {
+        depotAnimator.SetBool("Open", false);
+    }
+
 }

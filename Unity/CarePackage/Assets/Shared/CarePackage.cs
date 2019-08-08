@@ -25,8 +25,7 @@ public class CarePackageConfig
 {
     public string meterSlot;
     public string meterBox;
-    public string depotSlotA;
-    public string depotSlotB;
+    public string depotSlot;
 
     public CarePackageBoxConfig[] boxes;
     public CarePackageItemConfig[] items;

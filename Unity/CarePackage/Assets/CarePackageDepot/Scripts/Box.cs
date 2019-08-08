@@ -6,6 +6,7 @@ public class Box : MonoBehaviour
 {
     [SerializeField] GameObject itemPrefab = default;
     [SerializeField] Transform itemSpawnPoint = default;
+    [SerializeField] GameObject confetti = default;
 
     public void Start()
     {
@@ -14,7 +15,9 @@ public class Box : MonoBehaviour
 
     public void Emit()
     {
-        Destroy(gameObject, 5);
+        confetti.SetActive(true);
+
+        //
 
         List<string> itemNames = CarePackage.Instance.GetItemsInBox(gameObject.name);
 
@@ -38,8 +41,8 @@ public class Box : MonoBehaviour
                     Destroy(itemInstance, 2f);
                 }
             }
-        }
 
+        }
         CarePackage.Instance.EmptyBox(gameObject.name);
     }
 }

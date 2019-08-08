@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CarePackageMeter : MonoBehaviour
 {
+    [SerializeField] GameObject instructions = default;
+
     [SerializeField] Transform rootTransform = default;
     [SerializeField] GameObject itemPrefab = default;
     [SerializeField] Animator doorAnimator = default;
@@ -33,6 +35,7 @@ public class CarePackageMeter : MonoBehaviour
         {
             boxPresent = false;
             doorAnimator.SetBool("Open", boxPresent);
+            instructions.SetActive(!boxPresent);
 
             Debug.Log("Box removed");
             currentBox = null;
@@ -67,6 +70,8 @@ public class CarePackageMeter : MonoBehaviour
 
                 boxPresent = true;
                 doorAnimator.SetBool("Open", boxPresent);
+                instructions.SetActive(!boxPresent);
+
             }
 
             if (currentBox == boxName)

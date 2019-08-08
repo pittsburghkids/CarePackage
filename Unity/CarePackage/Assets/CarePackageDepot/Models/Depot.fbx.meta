@@ -1,13 +1,33 @@
 fileFormatVersion: 2
 guid: c501cb19171d7433993c71149d3f5b04
 ModelImporter:
-  serializedVersion: 25
+  serializedVersion: 26
   internalIDToNameTable: []
   externalObjects:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: DepotBeltMaterial
+    second: {fileID: 2100000, guid: e41c616420a104aa0a646631c411d8d1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: DepotDoorMaterial
+    second: {fileID: 2100000, guid: 3f29d4292444e4fc0934851f5abfdf01, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: DepotMaterial
+    second: {fileID: 2100000, guid: 1112a94b513344924931da602b393ed0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: PackageBoxMaterial
+    second: {fileID: 2100000, guid: 1112a94b513344924931da602b393ed0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: phong1
     second: {fileID: 2100000, guid: 1112a94b513344924931da602b393ed0, type: 2}
   materials:
     importMaterials: 1
@@ -43,6 +63,7 @@ ModelImporter:
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1

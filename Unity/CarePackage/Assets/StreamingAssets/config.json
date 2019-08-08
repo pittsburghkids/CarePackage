@@ -1,8 +1,7 @@
 {
-    "meterSlot": "/dev/tty.usbmodem145101",
-    "meterBox": "/dev/tty.usbmodem145201",
-    "depotSlotA": "/dev/tty.usbmodem145301",
-    "depotSlotB": "/dev/tty.usbmodem145401",
+    "meterSlot": "/dev/tty.usbmodem1D11201",
+    "meterBox": "/dev/tty.usbmodem1D11101",
+    "depotSlot": "/dev/tty.usbmodem14401",
     "boxes": [
         {
             "name": "boxA",
@@ -14,31 +13,109 @@
                 1794345476,
                 1794337796
             ]
+        },
+        {
+            "name": "boxB",
+            "ids": [
+                575443854
+            ]
         }
     ],
     "items": [
         {
-            "name": "heart",
+            "name": "ArtistPalette",
+            "ids": [
+                1778613508
+            ]
+        },
+        {
+            "name": "Baseball",
             "ids": [
                 1778588676
             ]
         },
         {
-            "name": "star",
+            "name": "BeamingFaceWithSmilingEyes",
             "ids": [
-                1778530052
+                1778684676
             ]
         },
         {
-            "name": "shirt",
+            "name": "CatFace",
+            "ids": [
+                1778645764
+            ]
+        },
+        {
+            "name": "ClosedBook",
+            "ids": [
+                1778621700
+            ]
+        },
+        {
+            "name": "ClosedUmbrella",
+            "ids": [
+                1778692868
+            ]
+        },
+        {
+            "name": "Cookie",
+            "ids": [
+                1778621956
+            ]
+        },
+        {
+            "name": "DogFace",
+            "ids": [
+                1778684420
+            ]
+        },
+        {
+            "name": "FourLeafClover",
+            "ids": [
+                1778646020
+            ]
+        },
+        {
+            "name": "RedApple",
             "ids": [
                 1778588420
             ]
         },
         {
-            "name": "cookie",
+            "name": "RedHeart",
             "ids": [
-                1778646020
+                1778629636
+            ]
+        },
+        {
+            "name": "SmilingFaceWIthHearts",
+            "ids": [
+                1778676484
+            ]
+        },
+        {
+            "name": "Socks",
+            "ids": [
+                1778530052
+            ]
+        },
+        {
+            "name": "Star",
+            "ids": [
+                1778613252
+            ]
+        },
+        {
+            "name": "ThumbsUp",
+            "ids": [
+                1778637828
+            ]
+        },
+        {
+            "name": "TShirt",
+            "ids": [
+                1778675716
             ]
         }
     ]
