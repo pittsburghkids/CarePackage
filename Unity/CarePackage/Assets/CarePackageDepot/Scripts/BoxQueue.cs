@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BoxQueue : MonoBehaviour
 {
-    [SerializeField] float queueDelay = 4.5f;
+    [SerializeField] float queueDelay = 6f;
 
     private Queue<Animator> moverQueue = new Queue<Animator>();
     private float lastUnqueue = -1;

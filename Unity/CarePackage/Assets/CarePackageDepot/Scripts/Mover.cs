@@ -10,28 +10,11 @@ public class Mover : MonoBehaviour
     {
         this.package = package;
 
-        StartCoroutine(GetPackageRoutine(package));
-    }
-
-    IEnumerator GetPackageRoutine(GameObject package)
-    {
-        float startTime = Time.time;
-        float endTime = startTime + .4f;
-
-        while (Time.time < endTime)
-        {
-            float alpha = (Time.time - startTime) / (endTime - startTime);
-
-            package.transform.position = Vector3.Lerp(package.transform.position, transform.position, alpha);
-            yield return null;
-        }
-
         package.transform.parent = transform;
         package.transform.localPosition = Vector3.zero;
         package.transform.localRotation = Quaternion.identity;
         package.gameObject.GetComponent<Rigidbody>().isKinematic = true;
 
-        GetComponent<Animator>().SetTrigger("Move");
     }
 
     public void MoverDoor()
@@ -48,7 +31,7 @@ public class Mover : MonoBehaviour
     {
         package.GetComponent<Animator>().SetTrigger("Open");
 
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(2.5f);
 
         CarePackageDepot.Instance.CloseDoor();
 

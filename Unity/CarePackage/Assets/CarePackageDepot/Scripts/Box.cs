@@ -10,10 +10,23 @@ public class Box : MonoBehaviour
 
     public void Start()
     {
-        //CarePackage.Instance.Store(name, "star");
+        // CarePackage.Instance.Store(name, "Star");
+        // CarePackage.Instance.Store(name, "RedHeart");
+        // CarePackage.Instance.Store(name, "RedHeart");
+        // CarePackage.Instance.Store(name, "RedHeart");
+        // CarePackage.Instance.Store(name, "RedHeart");
+        // CarePackage.Instance.Store(name, "RedHeart");
+
+        // Invoke("Emit", 1);
     }
 
     public void Emit()
+    {
+        StartCoroutine(EmitRoutine());
+
+    }
+
+    IEnumerator EmitRoutine()
     {
         confetti.SetActive(true);
 
@@ -36,13 +49,17 @@ public class Box : MonoBehaviour
                     spriteRenderer.sprite = itemSprite;
 
                     Rigidbody rigidBody = itemInstance.GetComponent<Rigidbody>();
-                    rigidBody.AddForce(Vector3.up + (Vector3.right * Random.Range(-1, 1)));
+                    rigidBody.AddForce((Vector3.up * Random.Range(3, 5f)) + (Vector3.right * Random.Range(-3f, 3f)));
+                    rigidBody.AddTorque(Vector3.forward * Random.Range(-180f, 180f));
 
                     Destroy(itemInstance, 2f);
+
+                    yield return new WaitForSeconds(.2f);
                 }
             }
 
         }
         CarePackage.Instance.EmptyBox(gameObject.name);
+
     }
 }
