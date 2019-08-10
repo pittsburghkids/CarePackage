@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class CarePackageMeter : MonoBehaviour
 {
-    [SerializeField] GameObject instructions = default;
+    [SerializeField] GameObject insertBox = default;
+    [SerializeField] GameObject insertItem = default;
 
     [SerializeField] Transform rootTransform = default;
     [SerializeField] GameObject itemPrefab = default;
@@ -35,7 +36,9 @@ public class CarePackageMeter : MonoBehaviour
         {
             boxPresent = false;
             doorAnimator.SetBool("Open", boxPresent);
-            instructions.SetActive(!boxPresent);
+
+            insertBox.SetActive(!boxPresent);
+            insertItem.SetActive(boxPresent);
 
             Debug.Log("Box removed");
             currentBox = null;
@@ -70,7 +73,9 @@ public class CarePackageMeter : MonoBehaviour
 
                 boxPresent = true;
                 doorAnimator.SetBool("Open", boxPresent);
-                instructions.SetActive(!boxPresent);
+
+                insertBox.SetActive(!boxPresent);
+                insertItem.SetActive(boxPresent);
 
             }
 
@@ -84,6 +89,8 @@ public class CarePackageMeter : MonoBehaviour
     // New item inserted into slot.
     public void InsertItem(string message)
     {
+        insertItem.SetActive(false);
+
         string itemName = CarePackage.Instance.GetItemByID(message);
         if (itemName != null)
         {

@@ -59,7 +59,10 @@ public class Box : MonoBehaviour
             }
 
         }
-        CarePackage.Instance.EmptyBox(gameObject.name);
+    }
 
+    void OnDestroy()
+    {
+        CarePackage.Instance.EmptyBox(gameObject.name);
     }
 }
