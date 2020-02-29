@@ -23,7 +23,6 @@ public class Box : MonoBehaviour
     public void Emit()
     {
         StartCoroutine(EmitRoutine());
-
     }
 
     IEnumerator EmitRoutine()

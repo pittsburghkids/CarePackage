@@ -11,6 +11,6 @@ public class Belt : MonoBehaviour
     void Update()
     {
         offset = (offset + (Time.deltaTime * speed)) % 1.0f;
-        GetComponent<MeshRenderer>().material.mainTextureOffset = Vector2.up * offset;
+        GetComponent<MeshRenderer>().material.SetTextureOffset("_BaseMap", Vector2.up * offset);
     }
 }

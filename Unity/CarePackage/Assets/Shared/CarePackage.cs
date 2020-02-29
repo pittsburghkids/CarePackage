@@ -1,7 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 using System.IO;
+
+// Data structure for boards in config.json.
+[System.Serializable]
+public class CarePackageBoardConfig
+{
+    public string name;
+    public string serialNumber;
+}
 
 // Data structure for items in config.json.
 [System.Serializable]
@@ -23,16 +32,35 @@ public class CarePackageBoxConfig
 [System.Serializable]
 public class CarePackageConfig
 {
-    public string meterSlot;
-    public string meterBox;
-    public string depotSlot;
-
+    public CarePackageBoardConfig[] boards;
     public CarePackageBoxConfig[] boxes;
     public CarePackageItemConfig[] items;
 }
 
+public class CarePackageData
+{
+    public string type;
+
+    public string boardName;
+    public string boardSerialNumber;
+
+    public string rfidValue;
+
+    public string itemName;
+    public string itemUnicode;
+
+    public string boxName;
+}
+
 public class CarePackage : MonoBehaviour
 {
+    // Local websocket connection.
+    public WebSocketBridge webSocketBridge;
+
+    // Data recieved events.
+    public delegate void DataAction(CarePackageData carePackageData);
+    public event DataAction OnData;
+
     // Config object loaded from config.json.
     public CarePackageConfig carePackageConfig;
 
@@ -42,6 +70,9 @@ public class CarePackage : MonoBehaviour
     // Sprite map for items.
 
     private Dictionary<string, Sprite> spriteMap = new Dictionary<string, Sprite>();
+
+    // Box tracking.
+    string currentMeterBoxA;
 
     // Singleton creation.
     private static CarePackage instance;
@@ -62,16 +93,42 @@ public class CarePackage : MonoBehaviour
 
     void Awake()
     {
-        // Load configuration from config.json.
-        string path = Path.Combine(Application.streamingAssetsPath, "config.json");
+        StartCoroutine(GetConfig());
 
-        if (File.Exists(path))
+        // Connect to websocket.
+        webSocketBridge = new WebSocketBridge("ws://localhost:8080");
+        webSocketBridge.OnReceived += OnWebSocketReceived;
+    }
+
+    void OnDestroy()
+    {
+        webSocketBridge.Close();
+    }
+
+    private IEnumerator GetConfig()
+    {
+        string url = "http://localhost:8080/config.json";
+
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
         {
-            string fileText = File.ReadAllText(path);
-            carePackageConfig = JsonUtility.FromJson<CarePackageConfig>(fileText);
+            // Request and wait for the desired page.
+            yield return webRequest.SendWebRequest();
 
-            Debug.Log("CarePackageConfig loaded.");
+            if (webRequest.isNetworkError)
+            {
+                Debug.Log("UnityWebRequest Error: " + webRequest.error);
+            }
+            else
+            {
+                ProcessConfig(webRequest.downloadHandler.text);
+            }
         }
+
+    }
+
+    private void ProcessConfig(string configString)
+    {
+        carePackageConfig = JsonUtility.FromJson<CarePackageConfig>(configString);
 
         // Load item sprites.
         foreach (CarePackageItemConfig carePackageItem in carePackageConfig.items)
@@ -96,6 +153,21 @@ public class CarePackage : MonoBehaviour
                 Debug.LogWarningFormat("File not found: {0}", itemFileName);
             }
         }
+    }
+
+    public void WebSocketSend(CarePackageData carePackageData)
+    {
+        string carePackageJSON = JsonUtility.ToJson(carePackageData);
+        webSocketBridge.Send(carePackageJSON);
+    }
+
+    private void OnWebSocketReceived(string message)
+    {
+        Debug.Log(message);
+
+        CarePackageData carePackageData = JsonUtility.FromJson<CarePackageData>(message);
+
+        if (OnData != null) OnData(carePackageData);
     }
 
     // "Store" item in given box.
@@ -131,53 +203,18 @@ public class CarePackage : MonoBehaviour
         return null;
     }
 
-    // Find box by side ID from config.json.
-    public string GetBoxByID(string id)
-    {
-        int sideID = -1;
-        int.TryParse(id, out sideID);
-        if (sideID == -1) return null;
-        return GetBoxByID(sideID);
-    }
+    // Find board by serial number.
 
-    // Find box by side ID from config.json.
-    public string GetBoxByID(int id)
+    public CarePackageBoardConfig GetBoardBySerialNumber(string serialNumber)
     {
-        foreach (CarePackageBoxConfig carePackageBox in carePackageConfig.boxes)
+        foreach (CarePackageBoardConfig carePackageBoard in carePackageConfig.boards)
         {
-            foreach (int sideID in carePackageBox.ids)
+            if (carePackageBoard.serialNumber == serialNumber)
             {
-                if (id == sideID)
-                {
-                    return carePackageBox.name;
-                }
+                return carePackageBoard;
             }
         }
-        return null;
-    }
 
-    // Find item by side ID from config.json.
-    public string GetItemByID(string id)
-    {
-        int sideID = -1;
-        int.TryParse(id, out sideID);
-        if (sideID == -1) return null;
-        return GetItemByID(sideID);
-    }
-
-    // Find item by side ID from config.json.
-    public string GetItemByID(int id)
-    {
-        foreach (CarePackageItemConfig carePackageItem in carePackageConfig.items)
-        {
-            foreach (int sideID in carePackageItem.ids)
-            {
-                if (id == sideID)
-                {
-                    return carePackageItem.name;
-                }
-            }
-        }
         return null;
     }
 

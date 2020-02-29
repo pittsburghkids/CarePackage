@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CarePackageMeter : MonoBehaviour
+public class CarePackageLoader : MonoBehaviour
 {
     [SerializeField] GameObject insertBox = default;
     [SerializeField] GameObject insertItem = default;
@@ -26,7 +26,7 @@ public class CarePackageMeter : MonoBehaviour
     {
         Debug.Log(carePackageData.itemName);
 
-        if (carePackageData.boardName == "MeterItemA" || carePackageData.boardName == "MeterItemB")
+        if (carePackageData.boardName == "LoaderItemA" || carePackageData.boardName == "LoaderItemB")
         {
             // Item found.
             if (carePackageData.type == "tag.found" && carePackageData.itemName != null)
@@ -36,7 +36,7 @@ public class CarePackageMeter : MonoBehaviour
             }
         }
 
-        if (carePackageData.boardName == "MeterBoxA" || carePackageData.boardName == "MeterBoxB")
+        if (carePackageData.boardName == "LoaderBoxA" || carePackageData.boardName == "LoaderBoxB")
         {
             // Box found.
             if (carePackageData.type == "tag.found" && carePackageData.boxName != null)

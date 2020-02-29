@@ -12,7 +12,6 @@ public class CarePackageDepot : MonoBehaviour
     [SerializeField] Animator depotAnimator = default;
 
     private CarePackage carePackage;
-    private SerialReader slotReader;
 
     private Queue<string> deliveryQueue = new Queue<string>();
     float lastDelivery = 0;
@@ -35,27 +34,16 @@ public class CarePackageDepot : MonoBehaviour
     void Start()
     {
         carePackage = CarePackage.Instance;
-
-        slotReader = new SerialReader(carePackage.carePackageConfig.depotSlot);
-
-        slotReader.OnSerialMessage += Delivery;
+        carePackage.OnData += OnCarePackageData;
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            Delivery("1794330372");
-        }
-
-        //
-
         if (Time.time - lastDelivery > 1)
         {
             if (deliveryQueue.Count > 0)
             {
-                string message = deliveryQueue.Dequeue();
-                string boxName = CarePackage.Instance.GetBoxByID(message);
+                string boxName = deliveryQueue.Dequeue();
 
                 if (boxName != null)
                 {
@@ -73,11 +61,24 @@ public class CarePackageDepot : MonoBehaviour
 
     }
 
-    void OnDestroy()
+    private void OnCarePackageData(CarePackageData carePackageData)
     {
-        slotReader.OnSerialMessage -= Delivery;
+        // Box found.
+        Debug.Log(carePackageData.itemName);
 
-        slotReader?.Destroy();
+        if (carePackageData.boardName == "DepotBoxA" || carePackageData.boardName == "DepotBoxB")
+        {
+            if (carePackageData.type == "tag.found" && carePackageData.boxName != null)
+            {
+                Delivery(carePackageData.boxName);
+            }
+        }
+
+        // Item inserted into box.
+        if (carePackageData.type == "meter.insert" && carePackageData.itemName != null && carePackageData.boxName != null)
+        {
+            carePackage.Store(carePackageData.boxName, carePackageData.itemName);
+        }
     }
 
     public void Delivery(string message)

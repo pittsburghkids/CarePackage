@@ -264,7 +264,7 @@ Camera:
     m_Bits: 4294967295
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
-  m_TargetDisplay: 1
+  m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
   m_AllowMSAA: 1
@@ -418,7 +418,7 @@ GameObject:
   - component: {fileID: 1388118045}
   - component: {fileID: 1388118047}
   m_Layer: 0
-  m_Name: CarePackageLoader
+  m_Name: CarePackageMeter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -442,8 +442,7 @@ MonoBehaviour:
   itemPrefab: {fileID: 8880520497481660958, guid: a87d07cfa558d4321a6f3a55b1ceac16,
     type: 3}
   doorAnimator: {fileID: 1378470849}
-  carePackage: {fileID: 0}
-  currentBox: 
+  boxPresent: 0
 --- !u!4 &1388118046
 Transform:
   m_ObjectHideFlags: 0
