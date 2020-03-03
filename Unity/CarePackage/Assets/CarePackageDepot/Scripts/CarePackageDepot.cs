@@ -75,7 +75,7 @@ public class CarePackageDepot : MonoBehaviour
         }
 
         // Item inserted into box.
-        if (carePackageData.type == "meter.insert" && carePackageData.itemName != null && carePackageData.boxName != null)
+        if (carePackageData.type == "loader.insert" && carePackageData.itemName != null && carePackageData.boxName != null)
         {
             carePackage.Store(carePackageData.boxName, carePackageData.itemName);
         }

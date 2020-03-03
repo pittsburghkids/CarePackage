@@ -17,6 +17,7 @@ public class CarePackageBoardConfig
 public class CarePackageItemConfig
 {
     public string name;
+    public string unicode;
     public int[] ids;
 }
 
@@ -100,6 +101,14 @@ public class CarePackage : MonoBehaviour
         webSocketBridge.OnReceived += OnWebSocketReceived;
     }
 
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+    }
+
     void OnDestroy()
     {
         webSocketBridge.Close();
@@ -130,29 +139,37 @@ public class CarePackage : MonoBehaviour
     {
         carePackageConfig = JsonUtility.FromJson<CarePackageConfig>(configString);
 
-        // Load item sprites.
-        foreach (CarePackageItemConfig carePackageItem in carePackageConfig.items)
+        StartCoroutine(CreateSprites(carePackageConfig.items));
+    }
+
+    IEnumerator CreateSprites(CarePackageItemConfig[] carePackageItems)
+    {
+
+        foreach (CarePackageItemConfig carePackageItem in carePackageItems)
         {
-            string itemFileName = carePackageItem.name + ".png";
-            string itemFilePath = Path.Combine(Application.streamingAssetsPath, "items");
-            itemFilePath = Path.Combine(itemFilePath, itemFileName);
+            string url = string.Format("http://localhost:8080/images/{0}.png", carePackageItem.unicode);
 
-            if (File.Exists(itemFilePath))
+            using (UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(url))
             {
-                // Load texture from file.
-                byte[] itemBytes = File.ReadAllBytes(itemFilePath);
-                Texture2D itemTexture = new Texture2D(2, 2);
-                itemTexture.LoadImage(itemBytes);
+                yield return unityWebRequest.SendWebRequest();
 
-                // Create and store sprite.
-                Sprite itemSprite = Sprite.Create(itemTexture, new Rect(0, 0, itemTexture.width, itemTexture.height), new Vector2(.5f, .5f), 4000);
-                spriteMap.Add(carePackageItem.name, itemSprite);
-            }
-            else
-            {
-                Debug.LogWarningFormat("File not found: {0}", itemFileName);
+                if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
+                {
+                    Debug.Log(unityWebRequest.error);
+                }
+                else
+                {
+                    Texture2D itemTexture = DownloadHandlerTexture.GetContent(unityWebRequest);
+
+                    Debug.Log("Creating sprite for " + carePackageItem.name);
+
+                    // Create and store sprite.
+                    Sprite itemSprite = Sprite.Create(itemTexture, new Rect(0, 0, itemTexture.width, itemTexture.height), new Vector2(.5f, .5f), 8000);
+                    spriteMap.Add(carePackageItem.name, itemSprite);
+                }
             }
         }
+
     }
 
     public void WebSocketSend(CarePackageData carePackageData)

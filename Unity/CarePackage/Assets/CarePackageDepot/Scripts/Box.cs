@@ -53,6 +53,8 @@ public class Box : MonoBehaviour
 
                     Destroy(itemInstance, 2f);
 
+                    Debug.Log("Emitting: " + itemInstance.name);
+
                     yield return new WaitForSeconds(.2f);
                 }
             }
