@@ -1,0 +1,61 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class SceneLoader : MonoBehaviour
+{
+    void Start()
+    {
+        // Show development console.
+        Debug.developerConsoleVisible = true;
+
+        // Process command line arguments.
+        string[] commandLineArguments = System.Environment.GetCommandLineArgs();
+
+        Debug.Log("Command line argument count: " + commandLineArguments.Length);
+
+        for (int i = 0; i < commandLineArguments.Length; i++)
+        {
+            string commandLineArgument = commandLineArguments[i];
+            Debug.Log("Command line argument: " + commandLineArgument);
+
+            if (commandLineArguments[i] == "-depot")
+            {
+                LoadDepotScene();
+                return;
+            }
+
+            if (commandLineArguments[i] == "-loader")
+            {
+                LoadLoaderScene();
+                return;
+            }
+        }
+
+        // Default scene to load with no args.
+        //LoadDepotScene();
+        LoadLoaderScene();
+
+    }
+
+    void LoadDepotScene()
+    {
+        // Load depot scene if needed.
+        if (!SceneManager.GetSceneByName("CarePackageDepot").isLoaded)
+        {
+            SceneManager.LoadSceneAsync("CarePackageDepot", LoadSceneMode.Additive);
+        }
+    }
+
+    void LoadLoaderScene()
+    {
+        // Load meter scene if needed.
+        if (!SceneManager.GetSceneByName("CarePackageLoader").isLoaded)
+        {
+            SceneManager.LoadSceneAsync("CarePackageLoader", LoadSceneMode.Additive);
+            SceneManager.LoadSceneAsync("CarePackageLoader", LoadSceneMode.Additive);
+        }
+
+    }
+}

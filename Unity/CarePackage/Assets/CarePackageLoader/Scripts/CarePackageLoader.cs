@@ -2,9 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 
 public class CarePackageLoader : MonoBehaviour
 {
+    [SerializeField] Camera loaderCamera = default;
+    [SerializeField] GameObject loaderSceneRoot = default;
+
     [SerializeField] GameObject insertBox = default;
     [SerializeField] GameObject insertItem = default;
 
@@ -14,19 +19,68 @@ public class CarePackageLoader : MonoBehaviour
 
     private CarePackage carePackage;
 
+    private string loaderItemBoardName;
+    private string loaderBoxBoardName;
+
     string currentBox = null;
 
     void Start()
     {
         carePackage = CarePackage.Instance;
         carePackage.OnData += OnCarePackageData;
+
+        bool multiDisplay = Display.displays.Length > 1;
+
+        // // Configure external displays.
+        if (multiDisplay)
+        {
+            Display.displays[1].Activate();
+        }
+
+        // See if this is the first or second instance of CarePackageLoader.
+        if (carePackage.loaderALoaded == false)
+        {
+            loaderSceneRoot.transform.position = Vector3.left;
+
+            if (!multiDisplay)
+            {
+                loaderCamera.rect = new Rect(0, 0, .5f, 1);
+            }
+            else
+            {
+                loaderCamera.targetDisplay = 0;
+            }
+
+            loaderItemBoardName = "LoaderItemA";
+            loaderBoxBoardName = "LoaderBoxA";
+
+            carePackage.loaderALoaded = true;
+        }
+        else if (carePackage.loaderBLoaded == false)
+        {
+            loaderSceneRoot.transform.position = Vector3.right;
+
+            if (!multiDisplay)
+            {
+                loaderCamera.rect = new Rect(.5f, 0, .5f, 1);
+            }
+            else
+            {
+                loaderCamera.targetDisplay = 1;
+            }
+
+            loaderItemBoardName = "LoaderItemB";
+            loaderBoxBoardName = "LoaderBoxB";
+
+            loaderCamera.GetComponent<AudioListener>().enabled = false;
+
+            carePackage.loaderBLoaded = true;
+        }
     }
 
     private void OnCarePackageData(CarePackageData carePackageData)
     {
-        Debug.Log(carePackageData.itemName);
-
-        if (carePackageData.boardName == "LoaderItemA" || carePackageData.boardName == "LoaderItemB")
+        if (carePackageData.boardName == loaderItemBoardName)
         {
             // Item found.
             if (carePackageData.type == "tag.found" && carePackageData.itemName != null)
@@ -36,7 +90,7 @@ public class CarePackageLoader : MonoBehaviour
             }
         }
 
-        if (carePackageData.boardName == "LoaderBoxA" || carePackageData.boardName == "LoaderBoxB")
+        if (carePackageData.boardName == loaderBoxBoardName)
         {
             // Box found.
             if (carePackageData.type == "tag.found" && carePackageData.boxName != null)

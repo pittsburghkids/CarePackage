@@ -55,6 +55,9 @@ public class CarePackageData
 
 public class CarePackage : MonoBehaviour
 {
+    public bool loaderALoaded = false;
+    public bool loaderBLoaded = false;
+
     // Local websocket connection.
     public WebSocketBridge webSocketBridge;
 
@@ -69,7 +72,6 @@ public class CarePackage : MonoBehaviour
     private Dictionary<string, List<string>> storageMap = new Dictionary<string, List<string>>();
 
     // Sprite map for items.
-
     private Dictionary<string, Sprite> spriteMap = new Dictionary<string, Sprite>();
 
     // Box tracking.
@@ -107,11 +109,19 @@ public class CarePackage : MonoBehaviour
         {
             Application.Quit();
         }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+
+            OnWebSocketReceived("{\"type\":\"loader.insert\",\"boardName\":\"\",\"boardSerialNumber\":\"\",\"rfidValue\":\"\",\"itemName\":\"Basketball\",\"itemUnicode\":\"\",\"boxName\":\"BoxA\"}");
+            OnWebSocketReceived("{\"type\":\"tag.found\",\"rfidValue\":437973764,\"boardSerialNumber\":\"5583834373335190D031\",\"boardName\":\"DepotBoxB\",\"boxName\":\"BoxA\"}");
+
+        }
     }
 
     void OnDestroy()
     {
-        webSocketBridge.Close();
+        if (webSocketBridge != null) webSocketBridge.Close();
     }
 
     private IEnumerator GetConfig()
@@ -182,9 +192,17 @@ public class CarePackage : MonoBehaviour
     {
         Debug.Log(message);
 
-        CarePackageData carePackageData = JsonUtility.FromJson<CarePackageData>(message);
+        try
+        {
+            CarePackageData carePackageData = JsonUtility.FromJson<CarePackageData>(message);
+            if (OnData != null) OnData(carePackageData);
+        }
+        catch (System.Exception exception)
+        {
+            Debug.LogWarning("Couldn't parse JSON message.");
+            return;
+        }
 
-        if (OnData != null) OnData(carePackageData);
     }
 
     // "Store" item in given box.
