@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
-using System.IO;
+
+using System.Linq;
 
 // Data structure for boards in config.json.
 [System.Serializable]
@@ -21,6 +22,13 @@ public class CarePackageItemConfig
     public int[] ids;
 }
 
+// Data structure for locations in config.json.
+[System.Serializable]
+public class CarePackageLocationConfig
+{
+    public string name;
+}
+
 // Data structure for boxes in config.json.
 [System.Serializable]
 public class CarePackageBoxConfig
@@ -36,6 +44,7 @@ public class CarePackageConfig
     public CarePackageBoardConfig[] boards;
     public CarePackageBoxConfig[] boxes;
     public CarePackageItemConfig[] items;
+    public CarePackageLocationConfig[] locations;
 }
 
 public class CarePackageData
@@ -71,8 +80,9 @@ public class CarePackage : MonoBehaviour
     // Storage map for items placed in boxes.
     private Dictionary<string, List<string>> storageMap = new Dictionary<string, List<string>>();
 
-    // Sprite map for items.
-    private Dictionary<string, Sprite> spriteMap = new Dictionary<string, Sprite>();
+    // Sprite map for items and locations.
+    private Dictionary<string, Sprite> spriteMapItems = new Dictionary<string, Sprite>();
+    private Dictionary<string, Sprite> spriteMapLocations = new Dictionary<string, Sprite>();
 
     // Box tracking.
     string currentMeterBoxA;
@@ -112,10 +122,8 @@ public class CarePackage : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.P))
         {
-
             OnWebSocketReceived("{\"type\":\"loader.insert\",\"boardName\":\"\",\"boardSerialNumber\":\"\",\"rfidValue\":\"\",\"itemName\":\"Basketball\",\"itemUnicode\":\"\",\"boxName\":\"BoxA\"}");
             OnWebSocketReceived("{\"type\":\"tag.found\",\"rfidValue\":437973764,\"boardSerialNumber\":\"5583834373335190D031\",\"boardName\":\"DepotBoxB\",\"boxName\":\"BoxA\"}");
-
         }
     }
 
@@ -149,15 +157,19 @@ public class CarePackage : MonoBehaviour
     {
         carePackageConfig = JsonUtility.FromJson<CarePackageConfig>(configString);
 
-        StartCoroutine(CreateSprites(carePackageConfig.items));
+        StartCoroutine(CreateSprites(carePackageConfig));
     }
 
-    IEnumerator CreateSprites(CarePackageItemConfig[] carePackageItems)
+    IEnumerator CreateSprites(CarePackageConfig carePackageConfig)
     {
 
-        foreach (CarePackageItemConfig carePackageItem in carePackageItems)
+
+
+        foreach (CarePackageItemConfig carePackageItem in carePackageConfig.items)
         {
-            string url = string.Format("http://localhost:8080/images/{0}.png", carePackageItem.unicode);
+            string url = string.Format("http://localhost:8080/images/items/{0}.png", carePackageItem.unicode);
+
+            Debug.Log("Downloading image for " + carePackageItem.name);
 
             using (UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(url))
             {
@@ -170,12 +182,38 @@ public class CarePackage : MonoBehaviour
                 else
                 {
                     Texture2D itemTexture = DownloadHandlerTexture.GetContent(unityWebRequest);
-
                     Debug.Log("Creating sprite for " + carePackageItem.name);
 
                     // Create and store sprite.
                     Sprite itemSprite = Sprite.Create(itemTexture, new Rect(0, 0, itemTexture.width, itemTexture.height), new Vector2(.5f, .5f), 8000);
-                    spriteMap.Add(carePackageItem.name, itemSprite);
+                    spriteMapItems.Add(carePackageItem.name, itemSprite);
+                }
+            }
+        }
+
+
+        foreach (CarePackageLocationConfig carePackageLocation in carePackageConfig.locations)
+        {
+            string url = string.Format("http://localhost:8080/images/locations/{0}.png", carePackageLocation.name);
+
+            Debug.Log("Downloading image for " + carePackageLocation.name);
+
+            using (UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(url))
+            {
+                yield return unityWebRequest.SendWebRequest();
+
+                if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
+                {
+                    Debug.Log(unityWebRequest.error);
+                }
+                else
+                {
+                    Texture2D itemTexture = DownloadHandlerTexture.GetContent(unityWebRequest);
+                    Debug.Log("Creating sprite for " + carePackageLocation.name);
+
+                    // Create and store sprite.
+                    Sprite itemSprite = Sprite.Create(itemTexture, new Rect(0, 0, itemTexture.width, itemTexture.height), new Vector2(.5f, .5f), 100);
+                    spriteMapLocations.Add(carePackageLocation.name, itemSprite);
                 }
             }
         }
@@ -197,12 +235,11 @@ public class CarePackage : MonoBehaviour
             CarePackageData carePackageData = JsonUtility.FromJson<CarePackageData>(message);
             if (OnData != null) OnData(carePackageData);
         }
-        catch (System.Exception exception)
+        catch (System.Exception)
         {
             Debug.LogWarning("Couldn't parse JSON message.");
             return;
         }
-
     }
 
     // "Store" item in given box.
@@ -254,13 +291,31 @@ public class CarePackage : MonoBehaviour
     }
 
     // Get sprite image for item name.
-    public Sprite GetSpriteForItemName(string itemName)
+    public Sprite GetSpriteForItemName(string name)
     {
-        if (spriteMap.ContainsKey(itemName))
+        if (spriteMapItems.ContainsKey(name))
         {
-            return spriteMap[itemName];
+            return spriteMapItems[name];
         }
         return null;
+    }
+
+    // Get sprite image for location name.
+    public Sprite GetSpriteForLocationName(string name)
+    {
+        if (spriteMapLocations.ContainsKey(name))
+        {
+            return spriteMapLocations[name];
+        }
+        return null;
+    }
+
+    // Get random location sprite.
+    public Sprite GetRandomLocationSprite()
+    {
+        int spriteIndex = Random.Range(0, spriteMapLocations.Count);
+        Sprite locationSprite = spriteMapLocations.ElementAt(spriteIndex).Value;
+        return locationSprite;
     }
 
 }

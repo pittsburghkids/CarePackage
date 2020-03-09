@@ -19,8 +19,8 @@ public class CarePackageLoader : MonoBehaviour
 
     private CarePackage carePackage;
 
-    private string loaderItemBoardName;
-    private string loaderBoxBoardName;
+    private string loaderItemBoardName = "LoaderItemA";
+    private string loaderBoxBoardName = "LoaderBoxA";
 
     string currentBox = null;
 

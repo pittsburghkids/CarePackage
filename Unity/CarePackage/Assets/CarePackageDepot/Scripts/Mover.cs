@@ -6,15 +6,16 @@ public class Mover : MonoBehaviour
 {
     GameObject package;
 
-    public void GetPackage(GameObject package)
+    public int index = 0;
+    public bool autoUnpause = true;
+
+    public void SetPackage(GameObject package)
     {
         this.package = package;
 
         package.transform.parent = transform;
         package.transform.localPosition = Vector3.zero;
         package.transform.localRotation = Quaternion.identity;
-        package.gameObject.GetComponent<Rigidbody>().isKinematic = true;
-
     }
 
     public void MoverDoor()
@@ -40,5 +41,44 @@ public class Mover : MonoBehaviour
         Destroy(gameObject);
         Destroy(package);
     }
-}
 
+    void OnCollisionEnter(Collision collision)
+    {
+        Mover otherMover = collision.gameObject.GetComponent<Mover>();
+
+        if (otherMover != null)
+        {
+            if (otherMover.index < index)
+            {
+                Debug.Log(collision.gameObject.name);
+                Pause();
+            }
+        }
+    }
+
+    void OnCollisionExit(Collision collision)
+    {
+        Mover otherMover = collision.gameObject.GetComponent<Mover>();
+
+        if (otherMover != null)
+        {
+            if (otherMover.index < index && autoUnpause)
+            {
+                Unpause();
+            }
+        }
+    }
+
+    public void Pause()
+    {
+        Animator animator = GetComponent<Animator>();
+        animator.speed = 0;
+    }
+
+    public void Unpause()
+    {
+        Animator animator = GetComponent<Animator>();
+        animator.speed = 1;
+    }
+
+}

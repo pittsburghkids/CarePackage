@@ -8,7 +8,7 @@ public class SceneLoader : MonoBehaviour
     void Start()
     {
         // Show development console.
-        Debug.developerConsoleVisible = true;
+        Debug.LogError("Force the developer console to appear.");
 
         // Process command line arguments.
         string[] commandLineArguments = System.Environment.GetCommandLineArgs();
@@ -34,9 +34,8 @@ public class SceneLoader : MonoBehaviour
         }
 
         // Default scene to load with no args.
-        //LoadDepotScene();
-        LoadLoaderScene();
-
+        LoadDepotScene();
+        //LoadLoaderScene();
     }
 
     void LoadDepotScene()

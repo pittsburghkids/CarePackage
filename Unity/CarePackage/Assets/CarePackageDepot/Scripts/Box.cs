@@ -8,17 +8,7 @@ public class Box : MonoBehaviour
     [SerializeField] Transform itemSpawnPoint = default;
     [SerializeField] GameObject confetti = default;
 
-    public void Start()
-    {
-        // CarePackage.Instance.Store(name, "Star");
-        // CarePackage.Instance.Store(name, "RedHeart");
-        // CarePackage.Instance.Store(name, "RedHeart");
-        // CarePackage.Instance.Store(name, "RedHeart");
-        // CarePackage.Instance.Store(name, "RedHeart");
-        // CarePackage.Instance.Store(name, "RedHeart");
-
-        // Invoke("Emit", 1);
-    }
+    public List<string> itemNames;
 
     public void Emit()
     {
@@ -30,8 +20,6 @@ public class Box : MonoBehaviour
         confetti.SetActive(true);
 
         //
-
-        List<string> itemNames = CarePackage.Instance.GetItemsInBox(gameObject.name);
 
         if (itemNames != null)
         {
@@ -65,5 +53,10 @@ public class Box : MonoBehaviour
     void OnDestroy()
     {
         CarePackage.Instance.EmptyBox(gameObject.name);
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("COLLIDE");
     }
 }

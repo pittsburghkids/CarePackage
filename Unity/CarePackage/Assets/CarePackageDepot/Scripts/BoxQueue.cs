@@ -6,27 +6,33 @@ public class BoxQueue : MonoBehaviour
 {
     [SerializeField] float queueDelay = 6f;
 
-    private Queue<Animator> moverQueue = new Queue<Animator>();
-    private float lastUnqueue = -1;
+    private Queue<Mover> moverQueue = new Queue<Mover>();
+
+    private bool boxClear = true;
 
     void Update()
     {
-
-        if (Time.time - lastUnqueue > queueDelay && moverQueue.Count > 0)
+        if (boxClear && moverQueue.Count > 0)
         {
-            Animator animator = moverQueue.Dequeue();
-            animator.speed = 1;
-            lastUnqueue = Time.time;
+            Mover mover = moverQueue.Dequeue();
+            mover.Unpause();
+
+            boxClear = false;
         }
+    }
+
+    public void BoxClear()
+    {
+        boxClear = true;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.gameObject.name);
+        Mover mover = other.transform.parent.GetComponent<Mover>();
+        mover.autoUnpause = false;
+        mover.Pause();
 
-        Animator animator = other.transform.parent.parent.GetComponent<Animator>();
-        animator.speed = 0;
-        moverQueue.Enqueue(animator);
+        moverQueue.Enqueue(mover);
     }
 
 }

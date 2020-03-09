@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5920885601720450500}
   - component: {fileID: 5920885601720450501}
   - component: {fileID: 1392548498631888078}
+  - component: {fileID: -796746084867981294}
   m_Layer: 0
   m_Name: Mover
   m_TagString: Untagged
@@ -64,6 +65,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc2cb69b7448d410a8183fee4239c723, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  index: 0
+--- !u!54 &-796746084867981294
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5920885601720450502}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 3
 --- !u!1 &5920885602297418046
 GameObject:
   m_ObjectHideFlags: 0
@@ -119,6 +137,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
