@@ -54,9 +54,4 @@ public class Box : MonoBehaviour
     {
         CarePackage.Instance.EmptyBox(gameObject.name);
     }
-
-    void OnCollisionEnter(Collision collision)
-    {
-        Debug.Log("COLLIDE");
-    }
 }

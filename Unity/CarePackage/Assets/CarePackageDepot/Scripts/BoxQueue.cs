@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class BoxQueue : MonoBehaviour
 {
-    [SerializeField] float queueDelay = 6f;
-
     private Queue<Mover> moverQueue = new Queue<Mover>();
 
     private bool boxClear = true;
