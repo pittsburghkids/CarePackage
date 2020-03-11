@@ -120,10 +120,16 @@ public class CarePackage : MonoBehaviour
             Application.Quit();
         }
 
-        if (Input.GetKeyDown(KeyCode.P))
+        if (Input.GetKeyDown(KeyCode.T))
         {
             OnWebSocketReceived("{\"type\":\"loader.insert\",\"boardName\":\"\",\"boardSerialNumber\":\"\",\"rfidValue\":\"\",\"itemName\":\"Basketball\",\"itemUnicode\":\"\",\"boxName\":\"BoxA\"}");
             OnWebSocketReceived("{\"type\":\"tag.found\",\"rfidValue\":437973764,\"boardSerialNumber\":\"5583834373335190D031\",\"boardName\":\"DepotBoxB\",\"boxName\":\"BoxA\"}");
+        }
+
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            OnWebSocketReceived("{\"type\":\"loader.insert\",\"boardName\":\"\",\"boardSerialNumber\":\"\",\"rfidValue\":\"\",\"itemName\":\"Basketball\",\"itemUnicode\":\"\",\"boxName\":\"BoxA\"}");
+            OnWebSocketReceived("{\"type\":\"tag.found\",\"rfidValue\":437973764,\"boardSerialNumber\":\"5583834373335190D031\",\"boardName\":\"DepotBoxA\",\"boxName\":\"BoxA\"}");
         }
     }
 
@@ -162,9 +168,6 @@ public class CarePackage : MonoBehaviour
 
     IEnumerator CreateSprites(CarePackageConfig carePackageConfig)
     {
-
-
-
         foreach (CarePackageItemConfig carePackageItem in carePackageConfig.items)
         {
             string url = string.Format("http://localhost:8080/images/items/{0}.png", carePackageItem.unicode);
@@ -313,6 +316,9 @@ public class CarePackage : MonoBehaviour
     // Get random location sprite.
     public Sprite GetRandomLocationSprite()
     {
+        // No locations available.
+        if (spriteMapLocations.Count == 0) return null;
+
         int spriteIndex = Random.Range(0, spriteMapLocations.Count);
         Sprite locationSprite = spriteMapLocations.ElementAt(spriteIndex).Value;
         return locationSprite;

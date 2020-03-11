@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using TMPro;
 
 public class CarePackageDelivery
 {
@@ -12,18 +13,30 @@ public class CarePackageDelivery
 
 public class CarePackageDepot : MonoBehaviour
 {
+    public const int MaxBoxes = 12;
 
     [SerializeField] Transform moverContainer = default;
     [SerializeField] GameObject boxPrefab = default;
-    [SerializeField] GameObject moverPrefab = default;
-    [SerializeField] Animator depotAnimator = default;
+    [SerializeField] GameObject sideMoverPrefab = default;
+    [SerializeField] GameObject topMoverPrefab = default;
     [SerializeField] SpriteRenderer locationSpriteRenderer = default;
     [SerializeField] BoxQueue boxQueue = default;
+
+    [Header("BillBoard")]
+    [SerializeField] TMP_Text deliveryCountText;
+
+    [Header("Enivronment")]
+    public DepotDoor depotDoor = default;
+    public DepotLift depotLift = default;
+    public DepotGrabber depotGrabber = default;
 
     private CarePackage carePackage;
 
     private Queue<CarePackageDelivery> deliveryQueue = new Queue<CarePackageDelivery>();
     float lastDelivery = 0;
+
+    private int boxCount = 0;
+    private int deliveryCount = 0;
 
     private int moverIndex = 0;
 
@@ -52,7 +65,7 @@ public class CarePackageDepot : MonoBehaviour
     {
         if (Time.time - lastDelivery > 1)
         {
-            if (deliveryQueue.Count > 0)
+            if (deliveryQueue.Count > 0 && boxCount < MaxBoxes)
             {
                 CarePackageDelivery carePackageDelivery = deliveryQueue.Dequeue();
 
@@ -99,10 +112,14 @@ public class CarePackageDepot : MonoBehaviour
 
         // Populate the box with items.
         Box box = boxInstance.GetComponent<Box>();
-        box.itemNames = CarePackage.Instance.GetItemsInBox(carePackageDelivery.boxName);
+        List<string> itemNames = CarePackage.Instance.GetItemsInBox(carePackageDelivery.boxName);
+        box.itemNames = new List<string>(itemNames);
+
+        // Choose side or top mover.
+        GameObject movderPrefab = (carePackageDelivery.boardName == "DepotBoxA") ? sideMoverPrefab : topMoverPrefab;
 
         // Create the box mover.
-        GameObject moverInstance = Instantiate(moverPrefab, moverContainer);
+        GameObject moverInstance = Instantiate(movderPrefab, moverContainer);
         moverInstance.name = "Mover_" + moverIndex;
 
         // Initialize the box mover.
@@ -110,19 +127,37 @@ public class CarePackageDepot : MonoBehaviour
         mover.index = moverIndex;
         mover.SetPackage(boxInstance);
 
+        // Trigger grab if needed.
+
+        if (carePackageDelivery.boardName == "DepotBoxB")
+        {
+            CarePackageDepot.Instance.GrabberGrab();
+        }
+
+        boxCount++;
         moverIndex++;
     }
 
     // Animation triggers.
 
+    public void GrabberGrab()
+    {
+        depotGrabber.Animator.SetTrigger("Grab");
+    }
+
+    public void LiftUp()
+    {
+        depotLift.Animator.SetTrigger("Up");
+    }
+
     public void OpenDoor()
     {
-        depotAnimator.SetBool("Open", true);
+        depotDoor.Animator.SetBool("Open", true);
     }
 
     public void CloseDoor()
     {
-        depotAnimator.SetBool("Open", false);
+        depotDoor.Animator.SetBool("Open", false);
     }
 
     // Animation events.
@@ -139,6 +174,11 @@ public class CarePackageDepot : MonoBehaviour
     {
         Debug.Log("DoorClosed");
         boxQueue.BoxClear();
+
+        deliveryCount++;
+        deliveryCountText.text = deliveryCount.ToString();
+
+        boxCount--;
     }
 
 }

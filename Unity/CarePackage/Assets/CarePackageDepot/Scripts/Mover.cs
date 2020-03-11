@@ -18,8 +18,9 @@ public class Mover : MonoBehaviour
         package.transform.localRotation = Quaternion.identity;
     }
 
-    public void MoverDoor()
+    public void MoverLiftUp()
     {
+        CarePackageDepot.Instance.LiftUp();
         CarePackageDepot.Instance.OpenDoor();
     }
 
@@ -30,7 +31,10 @@ public class Mover : MonoBehaviour
 
     private IEnumerator MoverCompleteRoutine()
     {
-        package.GetComponent<Animator>().SetTrigger("Open");
+        if (package != null)
+        {
+            package.GetComponent<Animator>().SetTrigger("Open");
+        }
 
         yield return new WaitForSeconds(2.5f);
 
