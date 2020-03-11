@@ -4907,6 +4907,7 @@ MonoBehaviour:
     type: 3}
   itemSpawnPoint: {fileID: 813562947}
   confetti: {fileID: 1345463933}
+  itemNames: []
 --- !u!95 &1511809219351866691
 Animator:
   serializedVersion: 3
