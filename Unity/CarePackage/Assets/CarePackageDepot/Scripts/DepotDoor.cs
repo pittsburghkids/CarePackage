@@ -2,8 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Depot : MonoBehaviour
+[RequireComponent(typeof(Animator))]
+public class DepotDoor : MonoBehaviour
 {
+    public Animator Animator
+    {
+        get
+        {
+            return GetComponent<Animator>();
+        }
+    }
 
     void DepotDoorOpening()
     {
