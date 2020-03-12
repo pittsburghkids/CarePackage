@@ -7,8 +7,14 @@ public class Box : MonoBehaviour
     [SerializeField] GameObject itemPrefab = default;
     [SerializeField] Transform itemSpawnPoint = default;
     [SerializeField] GameObject confetti = default;
+    [SerializeField] GameObject decal = default;
 
     public List<string> itemNames;
+
+    public void ShowDecal()
+    {
+        decal.SetActive(true);
+    }
 
     public void Emit()
     {
