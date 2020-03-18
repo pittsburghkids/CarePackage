@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: DepotBeltMaterial
+  m_Name: DepotBeltCornerMaterial
   m_Shader: {fileID: -6465566751694194690, guid: 7b15da7aec5ba4632b8c750a2e5c5541,
     type: 3}
   m_ShaderKeywords: 
@@ -65,7 +65,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - Vector1_F05BB33: 0
+    - Vector1_F05BB33: 1
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1

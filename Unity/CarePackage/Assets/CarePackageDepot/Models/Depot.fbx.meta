@@ -7,6 +7,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: DepotBeltCornerMaterial
+    second: {fileID: 2100000, guid: 7e759053eaee943b1b2e12783e647323, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: DepotBeltMaterial
     second: {fileID: 2100000, guid: e41c616420a104aa0a646631c411d8d1, type: 2}
   - first:
@@ -79,7 +84,7 @@ ModelImporter:
     importCameras: 1
     importLights: 1
     swapUVChannels: 0
-    generateSecondaryUV: 0
+    generateSecondaryUV: 1
     useFileUnits: 1
     keepQuads: 0
     weldVertices: 1
