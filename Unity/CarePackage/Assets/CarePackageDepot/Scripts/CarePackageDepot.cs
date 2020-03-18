@@ -6,6 +6,7 @@ using TMPro;
 
 public class CarePackageDelivery
 {
+    public float deliveryTime;
     public string boardName;
     public string boxName;
     public string locationName;
@@ -32,7 +33,7 @@ public class CarePackageDepot : MonoBehaviour
 
     private CarePackage carePackage;
 
-    private Queue<CarePackageDelivery> deliveryQueue = new Queue<CarePackageDelivery>();
+    private List<CarePackageDelivery> deliveryHistory = new List<CarePackageDelivery>();
     float lastDelivery = 0;
 
     private int boxCount = 0;
@@ -63,20 +64,28 @@ public class CarePackageDepot : MonoBehaviour
 
     void Update()
     {
+
+        // Check for new deliveries.
         if (Time.time - lastDelivery > 1)
         {
-            if (deliveryQueue.Count > 0 && boxCount < MaxBoxes)
+            if (deliveryHistory.Count > 0 && boxCount < MaxBoxes)
             {
-                CarePackageDelivery carePackageDelivery = deliveryQueue.Dequeue();
 
-                if (carePackageDelivery.boxName != null)
+                foreach (CarePackageDelivery carePackageDelivery in deliveryHistory)
                 {
-                    CreateBox(carePackageDelivery);
-                }
+                    if (carePackageDelivery.deliveryTime > lastDelivery)
+                    {
+                        CreateBox(carePackageDelivery);
 
-                lastDelivery = Time.time;
+                        lastDelivery = Time.time;
+                        break;
+                    }
+                }
             }
         }
+
+        // TODO: Periodically clear new deliveries.
+        
     }
 
     private void OnCarePackageData(CarePackageData carePackageData)
@@ -87,13 +96,24 @@ public class CarePackageDepot : MonoBehaviour
             if (carePackageData.type == "tag.found" && carePackageData.boxName != null)
             {
 
+
+                foreach (CarePackageDelivery delivery in deliveryHistory)
+                {
+                    if (delivery.boxName == carePackageData.boxName && delivery.deliveryTime > Time.time - 2)
+                    {
+                        Debug.Log("DUPLICATE DELIVERY");
+                        return;
+                    }
+                }
+
                 CarePackageDelivery carePackageDelivery = new CarePackageDelivery
                 {
+                    deliveryTime = Time.time,
                     boardName = carePackageData.boardName,
                     boxName = carePackageData.boxName
                 };
 
-                deliveryQueue.Enqueue(carePackageDelivery);
+                deliveryHistory.Add(carePackageDelivery);
             }
         }
 
@@ -113,7 +133,10 @@ public class CarePackageDepot : MonoBehaviour
         // Populate the box with items.
         Box box = boxInstance.GetComponent<Box>();
         List<string> itemNames = CarePackage.Instance.GetItemsInBox(carePackageDelivery.boxName);
-        box.itemNames = new List<string>(itemNames);
+        if (itemNames != null)
+        {
+            box.itemNames = new List<string>(itemNames);
+        }
 
         // Choose side or top mover.
         GameObject movderPrefab = (carePackageDelivery.boardName == "DepotBoxA") ? sideMoverPrefab : topMoverPrefab;
