@@ -5,6 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class SceneLoader : MonoBehaviour
 {
+    public bool loadDepot;
+    public bool loadLoader;
+
     void Start()
     {
         // Show development console.
@@ -33,9 +36,20 @@ public class SceneLoader : MonoBehaviour
             }
         }
 
+        // If no args were passed, use class bools.
+        if (loadDepot)
+        {
+            LoadDepotScene();
+            return;
+        }
+        if (loadLoader)
+        {
+            LoadLoaderScene();
+            return;
+        }
+
         // Default scene to load with no args.
         LoadDepotScene();
-        //LoadLoaderScene();
     }
 
     void LoadDepotScene()
