@@ -15,6 +15,7 @@ public class CarePackageDelivery
 public class CarePackageDepot : MonoBehaviour
 {
     public const int MaxBoxes = 12;
+    public const float MinTime = .5f;
 
     [SerializeField] Transform moverContainer = default;
     [SerializeField] GameObject boxPrefab = default;
@@ -66,7 +67,7 @@ public class CarePackageDepot : MonoBehaviour
     {
 
         // Check for new deliveries.
-        if (Time.time - lastDelivery > 1)
+        if (Time.time - lastDelivery > MinTime)
         {
             if (deliveryHistory.Count > 0 && boxCount < MaxBoxes)
             {
@@ -85,7 +86,7 @@ public class CarePackageDepot : MonoBehaviour
         }
 
         // TODO: Periodically clear new deliveries.
-        
+
     }
 
     private void OnCarePackageData(CarePackageData carePackageData)

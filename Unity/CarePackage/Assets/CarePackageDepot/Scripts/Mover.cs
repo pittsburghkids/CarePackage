@@ -52,9 +52,14 @@ public class Mover : MonoBehaviour
 
         if (otherMover != null)
         {
-            if (otherMover.index < index)
+            // Is the other mover in front or behind?
+            float dot = Vector3.Dot(transform.right, transform.position - otherMover.transform.position);
+            bool frontCollision = (dot < 0);
+
+            Debug.LogFormat("OnCollisionEnter: Mover: {0} OtherMover: {1} FrontCollision: {2}", index, otherMover.index, frontCollision);
+
+            if (frontCollision)
             {
-                Debug.Log(collision.gameObject.name);
                 Pause();
             }
         }
@@ -66,7 +71,13 @@ public class Mover : MonoBehaviour
 
         if (otherMover != null)
         {
-            if (otherMover.index < index && autoUnpause)
+            // Is the other mover in front or behind?
+            float dot = Vector3.Dot(transform.right, transform.position - otherMover.transform.position);
+            bool frontCollision = (dot < 0);
+
+            Debug.LogFormat("OnCollisionExit: Mover: {0} OtherMover: {1} FrontCollision: {2}", index, otherMover.index, frontCollision);
+
+            if (frontCollision && autoUnpause)
             {
                 Unpause();
             }

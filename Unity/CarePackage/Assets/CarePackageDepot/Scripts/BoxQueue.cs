@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class BoxQueue : MonoBehaviour
 {
-    private Queue<Mover> moverQueue = new Queue<Mover>();
+    public bool autoClear = false;
 
+    private Queue<Mover> moverQueue = new Queue<Mover>();
     private bool boxClear = true;
 
     void Update()
@@ -13,7 +14,9 @@ public class BoxQueue : MonoBehaviour
         if (boxClear && moverQueue.Count > 0)
         {
             Mover mover = moverQueue.Dequeue();
+
             mover.Unpause();
+            mover.autoUnpause = true;
 
             boxClear = false;
         }
@@ -27,10 +30,19 @@ public class BoxQueue : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         Mover mover = other.transform.parent.GetComponent<Mover>();
+
         mover.autoUnpause = false;
         mover.Pause();
 
         moverQueue.Enqueue(mover);
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (autoClear)
+        {
+            BoxClear();
+        }
     }
 
 }
