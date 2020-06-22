@@ -120,6 +120,12 @@ public class CarePackage : MonoBehaviour
             Application.Quit();
         }
 
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"LoaderItemA\",\"boardSerialNumber\":\"\",\"rfidValue\":\"\",\"itemName\":\"Basketball\",\"itemUnicode\":\"\",\"boxName\":\"BoxA\"}");
+        }
+
+
         if (Input.GetKeyDown(KeyCode.T))
         {
             OnWebSocketReceived("{\"type\":\"loader.insert\",\"boardName\":\"\",\"boardSerialNumber\":\"\",\"rfidValue\":\"\",\"itemName\":\"Basketball\",\"itemUnicode\":\"\",\"boxName\":\"BoxA\"}");
