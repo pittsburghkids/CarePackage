@@ -9,13 +9,37 @@ public class Box : MonoBehaviour
     [SerializeField] GameObject confetti = default;
     [SerializeField] GameObject decal = default;
 
-    public List<string> itemNames;
+    public CarePackageDelivery carePackageDelivery;
 
+    public void Deliver()
+    {
+        CarePackageDepot.Instance.SetDestinationSprite(carePackageDelivery.destinationName);
+    }
+
+    public void Open()
+    {
+        GetComponent<Animator>().SetTrigger("Open");
+    }
+
+    // Called by DepotStamp during animation.
     public void ShowDecal()
     {
+        if (carePackageDelivery.destinationName != null)
+        {
+            Sprite labelSprite = CarePackage.Instance.GetSpriteForLabelName(carePackageDelivery.destinationName);
+
+            SpriteRenderer[] spriteRenderers = decal.GetComponentsInChildren<SpriteRenderer>();
+
+            foreach (SpriteRenderer spriteRenderer in spriteRenderers)
+            {
+                spriteRenderer.sprite = labelSprite;
+            }
+        }
+
         decal.SetActive(true);
     }
 
+    // Called by an animation event in the "BoxOpen" animation.
     public void Emit()
     {
         StartCoroutine(EmitRoutine());
@@ -27,9 +51,9 @@ public class Box : MonoBehaviour
 
         //
 
-        if (itemNames != null)
+        if (carePackageDelivery.itemNames != null)
         {
-            foreach (string itemName in itemNames)
+            foreach (string itemName in carePackageDelivery.itemNames)
             {
                 if (itemName != null)
                 {
@@ -54,10 +78,11 @@ public class Box : MonoBehaviour
             }
 
         }
+
+        yield return new WaitForSeconds(2.5f);
+
+        // Close door when finished emitting.
+        CarePackageDepot.Instance.CloseDoor();
     }
 
-    void OnDestroy()
-    {
-        CarePackage.Instance.EmptyBox(gameObject.name);
-    }
 }
