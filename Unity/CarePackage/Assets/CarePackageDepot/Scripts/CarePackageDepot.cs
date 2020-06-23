@@ -25,7 +25,7 @@ public class CarePackageDepot : MonoBehaviour
     [SerializeField] BoxQueue boxQueue = default;
 
     [Header("BillBoard")]
-    [SerializeField] TMP_Text deliveryCountText;
+    [SerializeField] TMP_Text deliveryCountText = default;
 
     [Header("Enivronment")]
     public DepotDoor depotDoor = default;
@@ -41,6 +41,9 @@ public class CarePackageDepot : MonoBehaviour
     private int deliveryCount = 0;
 
     private int moverIndex = 0;
+
+    // For resetting the package count daily.
+    private int lastDay = -1;
 
     // Singleton creation.
     private static CarePackageDepot instance;
@@ -65,6 +68,12 @@ public class CarePackageDepot : MonoBehaviour
 
     void Update()
     {
+        // Reset delivery count if needed.
+        if (System.DateTime.Now.Day != lastDay)
+        {
+            deliveryCountText.text = deliveryCount.ToString();
+            lastDay = System.DateTime.Now.Day;
+        }
 
         // Check for new deliveries.
         if (Time.time - lastDelivery > MinTime)
