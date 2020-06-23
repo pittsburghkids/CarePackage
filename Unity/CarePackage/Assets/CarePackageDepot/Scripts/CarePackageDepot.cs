@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
-using TMPro;
 
 public class CarePackageDelivery
 {
     public float deliveryTime;
     public string boardName;
     public string boxName;
-    public string locationName;
+
+    public string destinationName;
+    public List<string> itemNames;
 }
 
 public class CarePackageDepot : MonoBehaviour
@@ -21,29 +22,26 @@ public class CarePackageDepot : MonoBehaviour
     [SerializeField] GameObject boxPrefab = default;
     [SerializeField] GameObject sideMoverPrefab = default;
     [SerializeField] GameObject topMoverPrefab = default;
-    [SerializeField] SpriteRenderer locationSpriteRenderer = default;
+    [SerializeField] SpriteRenderer destinationSpriteRenderer = default;
     [SerializeField] BoxQueue boxQueue = default;
-
-    [Header("BillBoard")]
-    [SerializeField] TMP_Text deliveryCountText = default;
 
     [Header("Enivronment")]
     public DepotDoor depotDoor = default;
     public DepotLift depotLift = default;
     public DepotGrabber depotGrabber = default;
 
+    // Points to CarePackage.Instance.
     private CarePackage carePackage;
 
     private List<CarePackageDelivery> deliveryHistory = new List<CarePackageDelivery>();
     float lastDelivery = 0;
 
     private int boxCount = 0;
-    private int deliveryCount = 0;
 
     private int moverIndex = 0;
 
-    // For resetting the package count daily.
-    private int lastDay = -1;
+    // Object to be deleted when the door closes.
+    GameObject doorCaller;
 
     // Singleton creation.
     private static CarePackageDepot instance;
@@ -68,13 +66,6 @@ public class CarePackageDepot : MonoBehaviour
 
     void Update()
     {
-        // Reset delivery count if needed.
-        if (System.DateTime.Now.Day != lastDay)
-        {
-            deliveryCountText.text = deliveryCount.ToString();
-            lastDay = System.DateTime.Now.Day;
-        }
-
         // Check for new deliveries.
         if (Time.time - lastDelivery > MinTime)
         {
@@ -106,7 +97,7 @@ public class CarePackageDepot : MonoBehaviour
             if (carePackageData.type == "tag.found" && carePackageData.boxName != null)
             {
 
-
+                // Look for duplicate deliveries.
                 foreach (CarePackageDelivery delivery in deliveryHistory)
                 {
                     if (delivery.boxName == carePackageData.boxName && delivery.deliveryTime > Time.time - 2)
@@ -116,21 +107,43 @@ public class CarePackageDepot : MonoBehaviour
                     }
                 }
 
+                // Prepare new delivery.
+
+                List<string> itemNames = CarePackage.Instance.GetItemsInBox(carePackageData.boxName);
+                string destinationName = CarePackage.Instance.GetDestinationForBox(carePackageData.boxName);
+
+                // TODO(SJG) If there are no items, add five random ones.
+                // TODO(SJG) If there is no destination, pick a random one.  
+
+                // Clear the item and destination maps for this box.
+                CarePackage.Instance.ResetBox(carePackageData.boxName);
+
                 CarePackageDelivery carePackageDelivery = new CarePackageDelivery
                 {
                     deliveryTime = Time.time,
                     boardName = carePackageData.boardName,
-                    boxName = carePackageData.boxName
+                    boxName = carePackageData.boxName,
+                    itemNames = itemNames,
+                    destinationName = destinationName
                 };
+
+                string itemString = System.String.Join(", ", carePackageDelivery.itemNames.ToArray());
+                Debug.LogFormat("OnCarePackageData: Box: {0} Destination: {1} Items: {2}", carePackageDelivery.boxName, carePackageDelivery.destinationName, itemString);
 
                 deliveryHistory.Add(carePackageDelivery);
             }
         }
 
+        // Set destination for box.
+        if (carePackageData.type == "loader.address" && carePackageData.destinationName != null && carePackageData.boxName != null)
+        {
+            carePackage.SetBoxDestination(carePackageData.boxName, carePackageData.destinationName);
+        }
+
         // Item inserted into box.
         if (carePackageData.type == "loader.insert" && carePackageData.itemName != null && carePackageData.boxName != null)
         {
-            carePackage.Store(carePackageData.boxName, carePackageData.itemName);
+            carePackage.StoreItemInBox(carePackageData.boxName, carePackageData.itemName);
         }
     }
 
@@ -140,13 +153,9 @@ public class CarePackageDepot : MonoBehaviour
         GameObject boxInstance = Instantiate(boxPrefab);
         boxInstance.name = carePackageDelivery.boxName;
 
-        // Populate the box with items.
+        // Set box data.
         Box box = boxInstance.GetComponent<Box>();
-        List<string> itemNames = CarePackage.Instance.GetItemsInBox(carePackageDelivery.boxName);
-        if (itemNames != null)
-        {
-            box.itemNames = new List<string>(itemNames);
-        }
+        box.carePackageDelivery = carePackageDelivery;
 
         // Choose side or top mover.
         GameObject movderPrefab = (carePackageDelivery.boardName == "DepotBoxA") ? sideMoverPrefab : topMoverPrefab;
@@ -158,17 +167,35 @@ public class CarePackageDepot : MonoBehaviour
         // Initialize the box mover.
         Mover mover = moverInstance.GetComponent<Mover>();
         mover.index = moverIndex;
-        mover.SetPackage(boxInstance);
+        mover.SetPackage(box);
 
         // Trigger grab if needed.
-
         if (carePackageDelivery.boardName == "DepotBoxB")
         {
             CarePackageDepot.Instance.GrabberGrab();
         }
 
+        // Logging
+        string itemString = System.String.Join(", ", carePackageDelivery.itemNames.ToArray());
+        Debug.LogFormat("CreateBox: Box: {0} Destination: {1} Items: {2}", carePackageDelivery.boxName, carePackageDelivery.destinationName, itemString);
+
+        // Increment counters.
         boxCount++;
         moverIndex++;
+    }
+
+    public void SetDestinationSprite(string destinationName)
+    {
+        Debug.Log("SetDestinationSprite: " + destinationName);
+
+        if (destinationName != null)
+        {
+            destinationSpriteRenderer.sprite = CarePackage.Instance.GetSpriteForDestinationName(destinationName);
+        }
+        else
+        {
+            destinationSpriteRenderer.sprite = CarePackage.Instance.GetRandomDestinationSprite();
+        }
     }
 
     // Animation triggers.
@@ -183,8 +210,9 @@ public class CarePackageDepot : MonoBehaviour
         depotLift.Animator.SetTrigger("Up");
     }
 
-    public void OpenDoor()
+    public void OpenDoor(GameObject doorCaller)
     {
+        this.doorCaller = doorCaller;
         depotDoor.Animator.SetBool("Open", true);
     }
 
@@ -194,22 +222,15 @@ public class CarePackageDepot : MonoBehaviour
     }
 
     // Animation events.
-
-    public void DoorOpening()
-    {
-        Debug.Log("DoorOpening");
-
-        // For now get a random location sprite until we have a real plan for setting location.
-        locationSpriteRenderer.sprite = carePackage.GetRandomLocationSprite();
-    }
-
     public void DoorClosed()
     {
         Debug.Log("DoorClosed");
-        boxQueue.BoxClear();
 
-        deliveryCount++;
-        deliveryCountText.text = deliveryCount.ToString();
+        // Delete the mover that asked for door open.
+        Destroy(doorCaller);
+
+        // Clear lift queue for next box.
+        boxQueue.BoxClear();
 
         boxCount--;
     }
