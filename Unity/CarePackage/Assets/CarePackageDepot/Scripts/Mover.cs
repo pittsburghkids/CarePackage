@@ -4,48 +4,41 @@ using UnityEngine;
 
 public class Mover : MonoBehaviour
 {
-    GameObject package;
+    Box box;
 
     public int index = 0;
     public bool autoUnpause = true;
 
-    public void SetPackage(GameObject package)
+    public void SetPackage(Box box)
     {
-        this.package = package;
+        this.box = box;
 
-        package.transform.parent = transform;
-        package.transform.localPosition = Vector3.zero;
-        package.transform.localRotation = Quaternion.identity;
+        box.transform.parent = transform;
+        box.transform.localPosition = Vector3.zero;
+        box.transform.localRotation = Quaternion.identity;
     }
 
+    // This is called by an event in the animation clip "MoverLift".
     public void MoverLiftUp()
     {
+        // This will set the destination background sprite.
+        box.Deliver();
+
+        // This will trigger animations for the door and lift.
         CarePackageDepot.Instance.LiftUp();
-        CarePackageDepot.Instance.OpenDoor();
+        CarePackageDepot.Instance.OpenDoor(gameObject);
     }
 
+    // This is called by an event in the animation clip "MoverLift".
     public void MoverComplete()
     {
-        StartCoroutine(MoverCompleteRoutine());
-    }
-
-    private IEnumerator MoverCompleteRoutine()
-    {
-        if (package != null)
+        if (box != null)
         {
-            package.GetComponent<Animator>().SetTrigger("Open");
+            box.Open();
         }
-
-        yield return new WaitForSeconds(2.5f);
-
-        CarePackageDepot.Instance.CloseDoor();
-
-        yield return new WaitForSeconds(1);
-
-        Destroy(gameObject);
-        Destroy(package);
     }
 
+    // When we collide with the box in front of use, we need to pause.
     void OnCollisionEnter(Collision collision)
     {
         Mover otherMover = collision.gameObject.GetComponent<Mover>();
@@ -65,6 +58,7 @@ public class Mover : MonoBehaviour
         }
     }
 
+    // If the box in front of us move ahead, we can unpause.
     void OnCollisionExit(Collision collision)
     {
         Mover otherMover = collision.gameObject.GetComponent<Mover>();
