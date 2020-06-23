@@ -222,6 +222,11 @@ public class CarePackageDepot : MonoBehaviour
     }
 
     // Animation events.
+    public void DoorOpening()
+    {
+
+    }
+
     public void DoorClosed()
     {
         Debug.Log("DoorClosed");
