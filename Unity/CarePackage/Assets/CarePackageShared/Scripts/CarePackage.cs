@@ -18,13 +18,12 @@ public class CarePackageBoardConfig
 public class CarePackageItemConfig
 {
     public string name;
-    public string unicode;
     public int[] ids;
 }
 
-// Data structure for locations in config.json.
+// Data structure for destination in config.json.
 [System.Serializable]
-public class CarePackageLocationConfig
+public class CarePackageDestinationConfig
 {
     public string name;
 }
@@ -44,7 +43,7 @@ public class CarePackageConfig
     public CarePackageBoardConfig[] boards;
     public CarePackageBoxConfig[] boxes;
     public CarePackageItemConfig[] items;
-    public CarePackageLocationConfig[] locations;
+    public CarePackageDestinationConfig[] destinations;
 }
 
 public class CarePackageData
@@ -55,10 +54,8 @@ public class CarePackageData
     public string boardSerialNumber;
 
     public string rfidValue;
-
     public string itemName;
-    public string itemUnicode;
-
+    public string destinationName;
     public string boxName;
 }
 
@@ -77,12 +74,15 @@ public class CarePackage : MonoBehaviour
     // Config object loaded from config.json.
     public CarePackageConfig carePackageConfig;
 
-    // Storage map for items placed in boxes.
+    // Storage map for items placed in boxes and destinations.
     private Dictionary<string, List<string>> storageMap = new Dictionary<string, List<string>>();
+    private Dictionary<string, string> destinationMap = new Dictionary<string, string>();
 
-    // Sprite map for items and locations.
+    // Sprite map for items and destinations.
     private Dictionary<string, Sprite> spriteMapItems = new Dictionary<string, Sprite>();
-    private Dictionary<string, Sprite> spriteMapLocations = new Dictionary<string, Sprite>();
+    private Dictionary<string, Sprite> spriteMapDestinations = new Dictionary<string, Sprite>();
+    private Dictionary<string, Sprite> spriteMapLabels = new Dictionary<string, Sprite>();
+
 
     // Box tracking.
     string currentMeterBoxA;
@@ -115,26 +115,32 @@ public class CarePackage : MonoBehaviour
 
     void Update()
     {
+        // Keyboard shortcuts for debugging.
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Application.Quit();
         }
 
-        if (Input.GetKeyDown(KeyCode.I))
+        if (Input.GetKeyDown(KeyCode.L))
         {
-            OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"LoaderItemA\",\"boardSerialNumber\":\"\",\"rfidValue\":\"\",\"itemName\":\"Basketball\",\"itemUnicode\":\"\",\"boxName\":\"BoxA\"}");
+            OnWebSocketReceived("{\"type\":\"loader.address\",\"destinationName\":\"House\",\"boxName\":\"BoxA\"}");
         }
 
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"LoaderItemA\",\"boardSerialNumber\":\"\",\"rfidValue\":\"\",\"itemName\":\"Basketball\",\"boxName\":\"BoxA\"}");
+        }
 
         if (Input.GetKeyDown(KeyCode.T))
         {
-            OnWebSocketReceived("{\"type\":\"loader.insert\",\"boardName\":\"\",\"boardSerialNumber\":\"\",\"rfidValue\":\"\",\"itemName\":\"Basketball\",\"itemUnicode\":\"\",\"boxName\":\"BoxA\"}");
+            OnWebSocketReceived("{\"type\":\"loader.insert\",\"boardName\":\"\",\"boardSerialNumber\":\"\",\"rfidValue\":\"\",\"itemName\":\"Basketball\",\"boxName\":\"BoxA\"}");
             OnWebSocketReceived("{\"type\":\"tag.found\",\"rfidValue\":437973764,\"boardSerialNumber\":\"5583834373335190D031\",\"boardName\":\"DepotBoxB\",\"boxName\":\"BoxA\"}");
         }
 
         if (Input.GetKeyDown(KeyCode.S))
         {
-            OnWebSocketReceived("{\"type\":\"loader.insert\",\"boardName\":\"\",\"boardSerialNumber\":\"\",\"rfidValue\":\"\",\"itemName\":\"Basketball\",\"itemUnicode\":\"\",\"boxName\":\"BoxA\"}");
+            OnWebSocketReceived("{\"type\":\"loader.insert\",\"boardName\":\"\",\"boardSerialNumber\":\"\",\"rfidValue\":\"\",\"itemName\":\"Basketball\",\"boxName\":\"BoxA\"}");
             OnWebSocketReceived("{\"type\":\"tag.found\",\"rfidValue\":437973764,\"boardSerialNumber\":\"5583834373335190D031\",\"boardName\":\"DepotBoxA\",\"boxName\":\"BoxA\"}");
         }
     }
@@ -176,9 +182,9 @@ public class CarePackage : MonoBehaviour
     {
         foreach (CarePackageItemConfig carePackageItem in carePackageConfig.items)
         {
-            string url = string.Format("http://localhost:8080/images/items/{0}.png", carePackageItem.unicode);
+            string url = string.Format("http://localhost:8080/images/items/{0}.png", carePackageItem.name);
 
-            Debug.Log("Downloading image for " + carePackageItem.name);
+            Debug.Log("Downloading item image for " + carePackageItem.name);
 
             using (UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(url))
             {
@@ -191,7 +197,7 @@ public class CarePackage : MonoBehaviour
                 else
                 {
                     Texture2D itemTexture = DownloadHandlerTexture.GetContent(unityWebRequest);
-                    Debug.Log("Creating sprite for " + carePackageItem.name);
+                    Debug.Log("Creating item sprite for " + carePackageItem.name);
 
                     // Create and store sprite.
                     Sprite itemSprite = Sprite.Create(itemTexture, new Rect(0, 0, itemTexture.width, itemTexture.height), new Vector2(.5f, .5f), 8000);
@@ -201,11 +207,11 @@ public class CarePackage : MonoBehaviour
         }
 
 
-        foreach (CarePackageLocationConfig carePackageLocation in carePackageConfig.locations)
+        foreach (CarePackageDestinationConfig carePackageDestination in carePackageConfig.destinations)
         {
-            string url = string.Format("http://localhost:8080/images/locations/{0}.png", carePackageLocation.name);
+            string url = string.Format("http://localhost:8080/images/destinations/{0}.png", carePackageDestination.name);
 
-            Debug.Log("Downloading image for " + carePackageLocation.name);
+            Debug.Log("Downloading destination image for " + carePackageDestination.name);
 
             using (UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(url))
             {
@@ -218,11 +224,37 @@ public class CarePackage : MonoBehaviour
                 else
                 {
                     Texture2D itemTexture = DownloadHandlerTexture.GetContent(unityWebRequest);
-                    Debug.Log("Creating sprite for " + carePackageLocation.name);
+                    Debug.Log("Creating destination sprite for " + carePackageDestination.name);
 
                     // Create and store sprite.
-                    Sprite itemSprite = Sprite.Create(itemTexture, new Rect(0, 0, itemTexture.width, itemTexture.height), new Vector2(.5f, .5f), 100);
-                    spriteMapLocations.Add(carePackageLocation.name, itemSprite);
+                    Sprite destinationSprite = Sprite.Create(itemTexture, new Rect(0, 0, itemTexture.width, itemTexture.height), new Vector2(.5f, .5f), 100);
+                    spriteMapDestinations.Add(carePackageDestination.name, destinationSprite);
+                }
+            }
+        }
+
+        foreach (CarePackageDestinationConfig carePackageDestination in carePackageConfig.destinations)
+        {
+            string url = string.Format("http://localhost:8080/images/labels/{0}.png", carePackageDestination.name);
+
+            Debug.Log("Downloading label image for " + carePackageDestination.name);
+
+            using (UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(url))
+            {
+                yield return unityWebRequest.SendWebRequest();
+
+                if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
+                {
+                    Debug.Log(unityWebRequest.error);
+                }
+                else
+                {
+                    Texture2D itemTexture = DownloadHandlerTexture.GetContent(unityWebRequest);
+                    Debug.Log("Creating label sprite for " + carePackageDestination.name);
+
+                    // Create and store sprite.
+                    Sprite labelSprite = Sprite.Create(itemTexture, new Rect(0, 0, itemTexture.width, itemTexture.height), new Vector2(.5f, .5f), 100);
+                    spriteMapLabels.Add(carePackageDestination.name, labelSprite);
                 }
             }
         }
@@ -251,26 +283,35 @@ public class CarePackage : MonoBehaviour
         }
     }
 
-    // "Store" item in given box.
-    public void Store(string box, string item)
+    // Set deistionaion for given box.
+
+    public void SetBoxDestination(string boxName, string destination)
     {
-        Debug.LogFormat("Storing {0} in {1}", item, box);
-
-        if (!storageMap.ContainsKey(box))
-        {
-            storageMap.Add(box, new List<string>());
-        }
-
-        storageMap[box].Add(item);
+        Debug.LogFormat("Addressing {0} to {1}", boxName, destination);
+        destinationMap[boxName] = destination;
     }
 
-    // Remove all items from box.
-    public void EmptyBox(string boxName)
+    public string GetDestinationForBox(string boxName)
     {
-        if (boxName != null && storageMap.ContainsKey(boxName))
+        if (destinationMap.ContainsKey(boxName))
         {
-            storageMap[boxName].Clear();
+            return destinationMap[boxName];
         }
+
+        return null;
+    }
+
+    // "Store" item in given box.
+    public void StoreItemInBox(string boxName, string item)
+    {
+        Debug.LogFormat("Storing {0} in {1}", item, boxName);
+
+        if (!storageMap.ContainsKey(boxName))
+        {
+            storageMap.Add(boxName, new List<string>());
+        }
+
+        storageMap[boxName].Add(item);
     }
 
     // Return a list of items stored in a box.
@@ -278,14 +319,20 @@ public class CarePackage : MonoBehaviour
     {
         if (boxName != null && storageMap.ContainsKey(boxName))
         {
-            return storageMap[boxName];
+            return new List<string>(storageMap[boxName]);
         }
 
         return null;
     }
 
-    // Find board by serial number.
+    // Remove saved values for destination and items.
+    public void ResetBox(string boxName)
+    {
+        storageMap[boxName].Clear();
+        destinationMap[boxName] = null;
+    }
 
+    // Find board by serial number.
     public CarePackageBoardConfig GetBoardBySerialNumber(string serialNumber)
     {
         foreach (CarePackageBoardConfig carePackageBoard in carePackageConfig.boards)
@@ -309,25 +356,35 @@ public class CarePackage : MonoBehaviour
         return null;
     }
 
-    // Get sprite image for location name.
-    public Sprite GetSpriteForLocationName(string name)
+    // Get sprite image for destination name.
+    public Sprite GetSpriteForDestinationName(string name)
     {
-        if (spriteMapLocations.ContainsKey(name))
+        if (spriteMapDestinations.ContainsKey(name))
         {
-            return spriteMapLocations[name];
+            return spriteMapDestinations[name];
         }
         return null;
     }
 
-    // Get random location sprite.
-    public Sprite GetRandomLocationSprite()
+    // Get random destination sprite.
+    public Sprite GetRandomDestinationSprite()
     {
-        // No locations available.
-        if (spriteMapLocations.Count == 0) return null;
+        // No destinations available.
+        if (spriteMapDestinations.Count == 0) return null;
 
-        int spriteIndex = Random.Range(0, spriteMapLocations.Count);
-        Sprite locationSprite = spriteMapLocations.ElementAt(spriteIndex).Value;
-        return locationSprite;
+        int spriteIndex = Random.Range(0, spriteMapDestinations.Count);
+        Sprite destinationSprite = spriteMapDestinations.ElementAt(spriteIndex).Value;
+        return destinationSprite;
+    }
+
+    // Get sprite image for label name.
+    public Sprite GetSpriteForLabelName(string name)
+    {
+        if (spriteMapLabels.ContainsKey(name))
+        {
+            return spriteMapLabels[name];
+        }
+        return null;
     }
 
 }
