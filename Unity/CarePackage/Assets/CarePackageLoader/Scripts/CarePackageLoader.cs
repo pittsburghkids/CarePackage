@@ -110,7 +110,7 @@ public class CarePackageLoader : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collider)
     {
-        carePackage.Store(currentBox, collider.gameObject.name);
+        carePackage.StoreItemInBox(currentBox, collider.gameObject.name);
 
         // Broadcast data.
 
@@ -123,6 +123,23 @@ public class CarePackageLoader : MonoBehaviour
 
         carePackage.WebSocketSend(carePackageData);
 
+    }
+
+    public void SetDestination()
+    {
+        if (currentBox != null)
+        {
+
+            CarePackageData carePackageData = new CarePackageData
+            {
+                type = "loader.address",
+                destinationName = "School",
+                boxName = currentBox
+            };
+
+            carePackage.WebSocketSend(carePackageData);
+
+        }
     }
 
     // New box inserted into slot.
