@@ -21,6 +21,7 @@ public class CarePackageLoader : MonoBehaviour
 
     private string loaderItemBoardName = "LoaderItemA";
     private string loaderBoxBoardName = "LoaderBoxA";
+    private string loaderAddressBoardName = "LoaderAddressA";
 
     string currentBox = null;
 
@@ -53,6 +54,7 @@ public class CarePackageLoader : MonoBehaviour
 
             loaderItemBoardName = "LoaderItemA";
             loaderBoxBoardName = "LoaderBoxA";
+            loaderAddressBoardName = "LoaderAddressA";
 
             carePackage.loaderALoaded = true;
         }
@@ -71,6 +73,7 @@ public class CarePackageLoader : MonoBehaviour
 
             loaderItemBoardName = "LoaderItemB";
             loaderBoxBoardName = "LoaderBoxB";
+            loaderAddressBoardName = "LoaderAddressB";
 
             loaderCamera.GetComponent<AudioListener>().enabled = false;
 
@@ -80,6 +83,11 @@ public class CarePackageLoader : MonoBehaviour
 
     private void OnCarePackageData(CarePackageData carePackageData)
     {
+        if (carePackageData.boardName == loaderAddressBoardName)
+        {
+            SetDestination(carePackageData.destinationName);
+        }
+
         if (carePackageData.boardName == loaderItemBoardName)
         {
             // Item found.
@@ -125,15 +133,15 @@ public class CarePackageLoader : MonoBehaviour
 
     }
 
-    public void SetDestination()
+    public void SetDestination(string destinationName)
     {
-        if (currentBox != null)
+        if (currentBox != null && destinationName != null)
         {
 
             CarePackageData carePackageData = new CarePackageData
             {
                 type = "loader.address",
-                destinationName = "School",
+                destinationName = destinationName,
                 boxName = currentBox
             };
 

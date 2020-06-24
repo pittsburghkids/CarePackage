@@ -53,7 +53,6 @@ public class CarePackageData
     public string boardName;
     public string boardSerialNumber;
 
-    public string rfidValue;
     public string itemName;
     public string destinationName;
     public string boxName;
@@ -122,26 +121,29 @@ public class CarePackage : MonoBehaviour
             Application.Quit();
         }
 
-        if (Input.GetKeyDown(KeyCode.L))
+        if (Input.GetKeyDown(KeyCode.A))
         {
             OnWebSocketReceived("{\"type\":\"loader.address\",\"destinationName\":\"House\",\"boxName\":\"BoxA\"}");
         }
 
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"LoaderItemA\",\"itemName\":\"Basketball\",\"boxName\":\"BoxA\"}");
+        }
+
         if (Input.GetKeyDown(KeyCode.I))
         {
-            OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"LoaderItemA\",\"boardSerialNumber\":\"\",\"rfidValue\":\"\",\"itemName\":\"Basketball\",\"boxName\":\"BoxA\"}");
+            OnWebSocketReceived("{\"type\":\"loader.insert\",\"boardName\":\"\",\"itemName\":\"Basketball\",\"boxName\":\"BoxA\"}");
         }
 
         if (Input.GetKeyDown(KeyCode.T))
         {
-            OnWebSocketReceived("{\"type\":\"loader.insert\",\"boardName\":\"\",\"boardSerialNumber\":\"\",\"rfidValue\":\"\",\"itemName\":\"Basketball\",\"boxName\":\"BoxA\"}");
-            OnWebSocketReceived("{\"type\":\"tag.found\",\"rfidValue\":437973764,\"boardSerialNumber\":\"5583834373335190D031\",\"boardName\":\"DepotBoxB\",\"boxName\":\"BoxA\"}");
+            OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"DepotBoxB\",\"boxName\":\"BoxA\"}");
         }
 
         if (Input.GetKeyDown(KeyCode.S))
         {
-            OnWebSocketReceived("{\"type\":\"loader.insert\",\"boardName\":\"\",\"boardSerialNumber\":\"\",\"rfidValue\":\"\",\"itemName\":\"Basketball\",\"boxName\":\"BoxA\"}");
-            OnWebSocketReceived("{\"type\":\"tag.found\",\"rfidValue\":437973764,\"boardSerialNumber\":\"5583834373335190D031\",\"boardName\":\"DepotBoxA\",\"boxName\":\"BoxA\"}");
+            OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"DepotBoxA\",\"boxName\":\"BoxA\"}");
         }
     }
 
