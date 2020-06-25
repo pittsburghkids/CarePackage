@@ -126,6 +126,11 @@ public class CarePackage : MonoBehaviour
             OnWebSocketReceived("{\"type\":\"loader.address\",\"destinationName\":\"House\",\"boxName\":\"BoxA\"}");
         }
 
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            OnWebSocketReceived("{\"type\":\"encoder.change\",\"boardName\":\"LoaderAddressA\",\"destinationName\":\"House\"}");
+        }
+
         if (Input.GetKeyDown(KeyCode.F))
         {
             OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"LoaderItemA\",\"itemName\":\"Basketball\",\"boxName\":\"BoxA\"}");
@@ -133,7 +138,17 @@ public class CarePackage : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.I))
         {
-            OnWebSocketReceived("{\"type\":\"loader.insert\",\"boardName\":\"\",\"itemName\":\"Basketball\",\"boxName\":\"BoxA\"}");
+            OnWebSocketReceived("{\"type\":\"loader.insert\",\"itemName\":\"Basketball\",\"boxName\":\"BoxA\"}");
+        }
+
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"LoaderBoxA\",\"boxName\":\"BoxA\"}");
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            OnWebSocketReceived("{\"type\":\"tag.removed\",\"boardName\":\"LoaderBoxA\",\"boxName\":\"BoxA\"}");
         }
 
         if (Input.GetKeyDown(KeyCode.T))
@@ -255,7 +270,7 @@ public class CarePackage : MonoBehaviour
                     Debug.Log("Creating label sprite for " + carePackageDestination.name);
 
                     // Create and store sprite.
-                    Sprite labelSprite = Sprite.Create(itemTexture, new Rect(0, 0, itemTexture.width, itemTexture.height), new Vector2(.5f, .5f), 100);
+                    Sprite labelSprite = Sprite.Create(itemTexture, new Rect(0, 0, itemTexture.width, itemTexture.height), new Vector2(.5f, .5f), 8000);
                     spriteMapLabels.Add(carePackageDestination.name, labelSprite);
                 }
             }
@@ -266,6 +281,7 @@ public class CarePackage : MonoBehaviour
     public void WebSocketSend(CarePackageData carePackageData)
     {
         string carePackageJSON = JsonUtility.ToJson(carePackageData);
+        Debug.Log(carePackageJSON);
         webSocketBridge.Send(carePackageJSON);
     }
 
@@ -382,7 +398,7 @@ public class CarePackage : MonoBehaviour
     // Get sprite image for label name.
     public Sprite GetSpriteForLabelName(string name)
     {
-        if (spriteMapLabels.ContainsKey(name))
+        if (name != null && spriteMapLabels.ContainsKey(name))
         {
             return spriteMapLabels[name];
         }
