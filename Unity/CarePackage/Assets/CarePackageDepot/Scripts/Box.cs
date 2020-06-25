@@ -24,18 +24,6 @@ public class Box : MonoBehaviour
     // Called by DepotStamp during animation.
     public void ShowDecal()
     {
-        if (carePackageDelivery.destinationName != null)
-        {
-            Sprite labelSprite = CarePackage.Instance.GetSpriteForLabelName(carePackageDelivery.destinationName);
-
-            SpriteRenderer[] spriteRenderers = decal.GetComponentsInChildren<SpriteRenderer>();
-
-            foreach (SpriteRenderer spriteRenderer in spriteRenderers)
-            {
-                spriteRenderer.sprite = labelSprite;
-            }
-        }
-
         decal.SetActive(true);
     }
 
