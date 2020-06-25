@@ -5,7 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(Animator))]
 public class DepotScanner : MonoBehaviour
 {
-    public GameObject scannerOverlay;
+    public SpriteRenderer destinationSpriteRenderer;
+    private Sprite defaultDestinationSprite;
 
     public Animator Animator
     {
@@ -15,15 +16,32 @@ public class DepotScanner : MonoBehaviour
         }
     }
 
-    public void Scan()
+    public void Start()
     {
+        defaultDestinationSprite = destinationSpriteRenderer.sprite;
+    }
+
+    public void Scan(Collider collider)
+    {
+        Box box = collider.gameObject.GetComponent<Box>();
+
+        Sprite destinationSprite = CarePackage.Instance.GetSpriteForLabelName(box.carePackageDelivery.destinationName);
+        if (destinationSprite != null)
+        {
+            destinationSpriteRenderer.sprite = destinationSprite;
+        }
+        else
+        {
+            destinationSpriteRenderer.sprite = defaultDestinationSprite;
+        }
+
         StartCoroutine(ScanRoutine());
     }
 
     private IEnumerator ScanRoutine()
     {
-        scannerOverlay.SetActive(true);
+        destinationSpriteRenderer.gameObject.SetActive(true);
         yield return new WaitForSeconds(1);
-        scannerOverlay.SetActive(false);
+        destinationSpriteRenderer.gameObject.SetActive(false);
     }
 }
