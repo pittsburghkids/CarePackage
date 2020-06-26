@@ -5,18 +5,42 @@ using TMPro;
 
 public class CarePackageHUD : MonoBehaviour
 {
+    public GameObject hud;
     public TMP_Text fpsText;
 
-    IEnumerator Start()
-    {
-        while (true)
-        {
-            float count = (1 / Time.deltaTime);
-            string label = "FPS: " + (Mathf.Round(count));
-            fpsText.text = label;
+    private int samples = 30;
+    private int sampleCount;
+    private float sampleTotal;
 
-            yield return new WaitForSeconds(0.5f);
+    void Start()
+    {
+        hud.SetActive(false);
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            hud.SetActive(!hud.activeSelf);
+        }
+
+        if (hud.activeSelf)
+        {
+            sampleTotal += Time.deltaTime;
+            sampleCount++;
+
+            if (sampleCount == samples)
+            {
+                float count = sampleCount / sampleTotal;
+                string label = "FPS: " + (Mathf.Round(count));
+                fpsText.text = label;
+
+                sampleTotal = 0;
+                sampleCount = 0;
+            }
+
         }
     }
+
 
 }
