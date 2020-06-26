@@ -357,6 +357,42 @@ public class CarePackage : MonoBehaviour
         if (destinationMap.ContainsKey(boxName)) { destinationMap[boxName] = null; }
     }
 
+    public string GetRandomDestinationName()
+    {
+        string destinationName = null;
+
+        if (spriteMapDestinations.Count > 0)
+        {
+            int spriteIndex = Random.Range(0, spriteMapDestinations.Count);
+            destinationName = spriteMapDestinations.ElementAt(spriteIndex).Key;
+        }
+
+        return destinationName;
+    }
+
+    public List<string> GetRandomItemNameList(int count)
+    {
+        List<string> itemNames = null;
+
+        // Make an array and shuffle it.
+        string[] itemNameArray = spriteMapItems.Keys.ToArray();
+
+        for (int i = 0; i < itemNameArray.Length; i++)
+        {
+            int j = Random.Range(i, itemNameArray.Length);
+
+            string temp = itemNameArray[i];
+            itemNameArray[i] = itemNameArray[j];
+            itemNameArray[j] = temp;
+        }
+
+        itemNames = new List<string>(itemNameArray);
+        itemNames = itemNames.GetRange(0, count);
+
+        return itemNames;
+    }
+
+
     // Find board by serial number.
     public CarePackageBoardConfig GetBoardBySerialNumber(string serialNumber)
     {
