@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 813562947}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ItemSpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   - component: {fileID: 1345463934}
   - component: {fileID: 1345463936}
   - component: {fileID: 1345463935}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Confetti
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4852,7 +4852,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6814066028509759884}
   - component: {fileID: 2624507630857245278}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DecalFBack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4933,7 +4933,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8755918995473265183}
   - component: {fileID: 4002631210211893275}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DecalFront
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5016,7 +5016,7 @@ GameObject:
   - component: {fileID: 6621780103571790802}
   - component: {fileID: 2347007451780219977}
   - component: {fileID: 1511809219351866691}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Box
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5099,7 +5099,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8971509995760617579}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Decals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5184,10 +5184,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1691499045145051390, guid: 29077f06b5d2c4a8bbf2ecab8f6f6478,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -1405830036213226966, guid: 29077f06b5d2c4a8bbf2ecab8f6f6478,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: -927199367670048503, guid: 29077f06b5d2c4a8bbf2ecab8f6f6478,
         type: 3}
       propertyPath: m_Name
       value: Package
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 29077f06b5d2c4a8bbf2ecab8f6f6478,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1934975228395934798, guid: 29077f06b5d2c4a8bbf2ecab8f6f6478,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 29077f06b5d2c4a8bbf2ecab8f6f6478, type: 3}
