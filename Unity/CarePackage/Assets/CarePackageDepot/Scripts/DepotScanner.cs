@@ -6,9 +6,6 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Animator))]
 public class DepotScanner : MonoBehaviour
 {
-    public SpriteRenderer destinationSpriteRenderer;
-    private Sprite defaultDestinationSprite;
-
     [SerializeField] GameObject itemLayout;
 
     public Animator Animator
@@ -22,8 +19,6 @@ public class DepotScanner : MonoBehaviour
     public void Start()
     {
         itemLayout.SetActive(false);
-
-        defaultDestinationSprite = destinationSpriteRenderer.sprite;
     }
 
     public void Scan(Collider collider)
@@ -56,29 +51,13 @@ public class DepotScanner : MonoBehaviour
             }
         }
 
-        //
-
-        Sprite destinationSprite = CarePackage.Instance.GetSpriteForLabelName(box.carePackageDelivery.destinationName);
-        if (destinationSprite != null)
-        {
-            destinationSpriteRenderer.sprite = destinationSprite;
-        }
-        else
-        {
-            destinationSpriteRenderer.sprite = defaultDestinationSprite;
-        }
-
         StartCoroutine(ScanRoutine());
     }
 
     private IEnumerator ScanRoutine()
     {
         itemLayout.SetActive(true);
-
-        // destinationSpriteRenderer.gameObject.SetActive(true);
         yield return new WaitForSeconds(1);
-        // destinationSpriteRenderer.gameObject.SetActive(false);
-
         itemLayout.SetActive(false);
     }
 }
