@@ -14,7 +14,8 @@ public class CarePackageLoader : MonoBehaviour
 
     [SerializeField] GameObject insertBox = default;
     [SerializeField] GameObject insertItem = default;
-    [SerializeField] GameObject chooseAddress = default;
+    [SerializeField] GameObject chooseAddressA = default;
+    [SerializeField] GameObject chooseAddressB = default;
 
     [SerializeField] Transform rootTransform = default;
     [SerializeField] GameObject itemPrefab = default;
@@ -22,6 +23,7 @@ public class CarePackageLoader : MonoBehaviour
     [SerializeField] Animator doorAnimator = default;
 
     private CarePackage carePackage;
+    GameObject chooseAddress;
 
     private string loaderItemBoardName = "LoaderItemA";
     private string loaderBoxBoardName = "LoaderBoxA";
@@ -67,6 +69,8 @@ public class CarePackageLoader : MonoBehaviour
             loaderBoxBoardName = "LoaderBoxA";
             loaderAddressBoardName = "LoaderAddressA";
 
+            chooseAddress = chooseAddressA;
+
             carePackage.loaderALoaded = true;
         }
         else if (carePackage.loaderBLoaded == false)
@@ -85,6 +89,8 @@ public class CarePackageLoader : MonoBehaviour
             loaderItemBoardName = "LoaderItemB";
             loaderBoxBoardName = "LoaderBoxB";
             loaderAddressBoardName = "LoaderAddressB";
+
+            chooseAddress = chooseAddressB;
 
             loaderCamera.GetComponent<AudioListener>().enabled = false;
 
