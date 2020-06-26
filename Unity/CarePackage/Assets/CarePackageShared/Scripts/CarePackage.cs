@@ -129,26 +129,32 @@ public class CarePackage : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E))
         {
             OnWebSocketReceived("{\"type\":\"encoder.change\",\"boardName\":\"LoaderAddressA\",\"destinationName\":\"House\"}");
+            OnWebSocketReceived("{\"type\":\"encoder.change\",\"boardName\":\"LoaderAddressB\",\"destinationName\":\"House\"}");
         }
 
         if (Input.GetKeyDown(KeyCode.F))
         {
-            OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"LoaderItemA\",\"itemName\":\"Basketball\",\"boxName\":\"BoxA\"}");
+            OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"LoaderItemA\",\"itemName\":\"Basketball\"}");
         }
 
         if (Input.GetKeyDown(KeyCode.I))
         {
             OnWebSocketReceived("{\"type\":\"loader.insert\",\"itemName\":\"Basketball\",\"boxName\":\"BoxA\"}");
+            OnWebSocketReceived("{\"type\":\"loader.insert\",\"itemName\":\"FourLeafClover\",\"boxName\":\"BoxA\"}");
+            OnWebSocketReceived("{\"type\":\"loader.insert\",\"itemName\":\"HeartDecoration\",\"boxName\":\"BoxA\"}");
+            OnWebSocketReceived("{\"type\":\"loader.insert\",\"itemName\":\"Kite\",\"boxName\":\"BoxA\"}");
         }
 
         if (Input.GetKeyDown(KeyCode.L))
         {
             OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"LoaderBoxA\",\"boxName\":\"BoxA\"}");
+            OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"LoaderBoxB\",\"boxName\":\"BoxB\"}");
         }
 
         if (Input.GetKeyDown(KeyCode.R))
         {
             OnWebSocketReceived("{\"type\":\"tag.removed\",\"boardName\":\"LoaderBoxA\",\"boxName\":\"BoxA\"}");
+            OnWebSocketReceived("{\"type\":\"tag.removed\",\"boardName\":\"LoaderBoxB\",\"boxName\":\"BoxB\"}");
         }
 
         if (Input.GetKeyDown(KeyCode.T))
@@ -289,16 +295,17 @@ public class CarePackage : MonoBehaviour
     {
         Debug.Log(message);
 
+        CarePackageData carePackageData = null;
         try
         {
-            CarePackageData carePackageData = JsonUtility.FromJson<CarePackageData>(message);
-            if (OnData != null) OnData(carePackageData);
+            carePackageData = JsonUtility.FromJson<CarePackageData>(message);
         }
         catch (System.Exception)
         {
             Debug.LogWarning("Couldn't parse JSON message.");
-            return;
         }
+
+        if (carePackageData != null && OnData != null) OnData(carePackageData);
     }
 
     // Set deistionaion for given box.
@@ -346,8 +353,8 @@ public class CarePackage : MonoBehaviour
     // Remove saved values for destination and items.
     public void ResetBox(string boxName)
     {
-        storageMap[boxName].Clear();
-        destinationMap[boxName] = null;
+        if (storageMap.ContainsKey(boxName)) { storageMap[boxName].Clear(); }
+        if (destinationMap.ContainsKey(boxName)) { destinationMap[boxName] = null; }
     }
 
     // Find board by serial number.
