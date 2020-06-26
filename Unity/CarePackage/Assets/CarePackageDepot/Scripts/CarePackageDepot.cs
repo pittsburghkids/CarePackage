@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
+
+// TODO(SJG) Store sprites instead of names for destintion and items?
 public class CarePackageDelivery
 {
     public float deliveryTime;
@@ -112,8 +114,18 @@ public class CarePackageDepot : MonoBehaviour
                 List<string> itemNames = CarePackage.Instance.GetItemsInBox(carePackageData.boxName);
                 string destinationName = CarePackage.Instance.GetDestinationForBox(carePackageData.boxName);
 
-                // TODO(SJG) If there are no items, add five random ones.
-                // TODO(SJG) If there is no destination, pick a random one.  
+
+                // Set items and destination of not provided.
+
+                if (itemNames == null)
+                {
+                    itemNames = CarePackage.Instance.GetRandomItemNameList(8);
+                }
+
+                if (destinationName == null)
+                {
+                    destinationName = CarePackage.Instance.GetRandomDestinationName();
+                }
 
                 // Clear the item and destination maps for this box.
                 CarePackage.Instance.ResetBox(carePackageData.boxName);
