@@ -127,8 +127,11 @@ public class CarePackageDepot : MonoBehaviour
                     destinationName = destinationName
                 };
 
-                string itemString = System.String.Join(", ", carePackageDelivery.itemNames.ToArray());
-                Debug.LogFormat("OnCarePackageData: Box: {0} Destination: {1} Items: {2}", carePackageDelivery.boxName, carePackageDelivery.destinationName, itemString);
+                if (carePackageDelivery.itemNames != null && carePackageDelivery.itemNames.Count > 0)
+                {
+                    string itemString = System.String.Join(", ", carePackageDelivery.itemNames.ToArray());
+                    Debug.LogFormat("OnCarePackageData: Box: {0} Destination: {1} Items: {2}", carePackageDelivery.boxName, carePackageDelivery.destinationName, itemString);
+                }
 
                 deliveryHistory.Add(carePackageDelivery);
             }
@@ -176,8 +179,11 @@ public class CarePackageDepot : MonoBehaviour
         }
 
         // Logging
-        string itemString = System.String.Join(", ", carePackageDelivery.itemNames.ToArray());
-        Debug.LogFormat("CreateBox: Box: {0} Destination: {1} Items: {2}", carePackageDelivery.boxName, carePackageDelivery.destinationName, itemString);
+        if (carePackageDelivery.itemNames != null && carePackageDelivery.itemNames.Count > 0)
+        {
+            string itemString = System.String.Join(", ", carePackageDelivery.itemNames.ToArray());
+            Debug.LogFormat("CreateBox: Box: {0} Destination: {1} Items: {2}", carePackageDelivery.boxName, carePackageDelivery.destinationName, itemString);
+        }
 
         // Increment counters.
         boxCount++;
