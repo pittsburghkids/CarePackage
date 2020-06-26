@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Box : MonoBehaviour
 {
+    private const float emitDuration = 2.0f;
+    private const float delayDuration = 2.0f;
+
     [SerializeField] GameObject itemPrefab = default;
     [SerializeField] Transform itemSpawnPoint = default;
     [SerializeField] GameObject confetti = default;
@@ -49,39 +52,46 @@ public class Box : MonoBehaviour
     {
         confetti.SetActive(true);
 
-        //
+        List<string> itemNames;
 
-        if (carePackageDelivery.itemNames != null)
+        if (carePackageDelivery != null && carePackageDelivery.itemNames != null)
         {
-            foreach (string itemName in carePackageDelivery.itemNames)
-            {
-                if (itemName != null)
-                {
-                    GameObject itemInstance = Instantiate(itemPrefab);
-                    itemInstance.transform.position = itemSpawnPoint.position;
-                    itemInstance.name = itemName;
-
-                    Sprite itemSprite = CarePackage.Instance.GetSpriteForItemName(itemName);
-                    SpriteRenderer spriteRenderer = itemInstance.GetComponent<SpriteRenderer>();
-                    spriteRenderer.sprite = itemSprite;
-
-                    Rigidbody rigidBody = itemInstance.GetComponent<Rigidbody>();
-                    rigidBody.AddForce((Vector3.up * Random.Range(3, 5f)) + (Vector3.right * Random.Range(-3f, 3f)));
-                    rigidBody.AddTorque(Vector3.forward * Random.Range(-180f, 180f));
-
-                    Destroy(itemInstance, 2f);
-
-                    Debug.Log("Emitting: " + itemInstance.name);
-
-                    yield return new WaitForSeconds(.2f);
-                }
-            }
-
+            itemNames = carePackageDelivery.itemNames;
+        }
+        else
+        {
+            itemNames = CarePackage.Instance.GetRandomItemNameList(8);
         }
 
-        yield return new WaitForSeconds(2.5f);
+        //
 
-        // Close door when finished emitting.
+        int itemCount = (itemNames.Count <= 15) ? itemNames.Count : 15;
+        float itemDelay = emitDuration / itemCount;
+
+        for (int i = 0; i < itemCount; i++)
+        {
+            string itemName = itemNames[i];
+
+            if (itemName != null)
+            {
+                GameObject itemInstance = Instantiate(itemPrefab);
+                itemInstance.transform.position = itemSpawnPoint.position;
+                itemInstance.name = itemName;
+
+                Sprite itemSprite = CarePackage.Instance.GetSpriteForItemName(itemName);
+                SpriteRenderer spriteRenderer = itemInstance.GetComponent<SpriteRenderer>();
+                spriteRenderer.sprite = itemSprite;
+
+                Debug.Log("Emitting: " + itemInstance.name);
+
+                yield return new WaitForSeconds(itemDelay);
+            }
+        }
+
+        yield return new WaitForSeconds(delayDuration);
+
+        // Close box and door when finished emitting.
+        GetComponent<Animator>().SetTrigger("Close");
         CarePackageDepot.Instance.CloseDoor();
     }
 
