@@ -6,7 +6,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Animator))]
 public class DepotScanner : MonoBehaviour
 {
-    [SerializeField] GameObject itemLayout;
+    [SerializeField] GameObject itemLayout = default;
 
     public Animator Animator
     {
@@ -21,7 +21,7 @@ public class DepotScanner : MonoBehaviour
         itemLayout.SetActive(false);
     }
 
-    public void Scan(Collider collider)
+    public void StartScan(Collider collider)
     {
         Box box = collider.gameObject.GetComponent<Box>();
 
@@ -51,13 +51,11 @@ public class DepotScanner : MonoBehaviour
             }
         }
 
-        StartCoroutine(ScanRoutine());
+        itemLayout.SetActive(true);
     }
 
-    private IEnumerator ScanRoutine()
+    public void StopScan(Collider collider)
     {
-        itemLayout.SetActive(true);
-        yield return new WaitForSeconds(1);
         itemLayout.SetActive(false);
     }
 }
