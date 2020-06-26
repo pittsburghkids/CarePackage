@@ -105,6 +105,11 @@ public class CarePackage : MonoBehaviour
 
     void Awake()
     {
+#if !UNITY_EDITOR
+        Cursor.visible = false;
+#endif
+
+        // Grab the config file.
         StartCoroutine(GetConfig());
 
         // Connect to websocket.
