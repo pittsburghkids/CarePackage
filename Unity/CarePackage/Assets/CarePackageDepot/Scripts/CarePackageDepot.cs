@@ -5,6 +5,7 @@ using System.IO;
 
 
 // TODO(SJG) Store sprites instead of names for destintion and items?
+[System.Serializable]
 public class CarePackageDelivery
 {
     public float deliveryTime;
@@ -13,6 +14,8 @@ public class CarePackageDelivery
 
     public string destinationName;
     public List<string> itemNames;
+
+    public bool delivered = false;
 }
 
 public class CarePackageDepot : MonoBehaviour
@@ -35,11 +38,9 @@ public class CarePackageDepot : MonoBehaviour
     // Points to CarePackage.Instance.
     private CarePackage carePackage;
 
-    private List<CarePackageDelivery> deliveryHistory = new List<CarePackageDelivery>();
+    [SerializeField] private List<CarePackageDelivery> deliveryHistory = new List<CarePackageDelivery>();
     float lastDelivery = 0;
-
     private int boxCount = 0;
-
     private int moverIndex = 0;
 
     // Object to be deleted when the door closes.
@@ -78,6 +79,7 @@ public class CarePackageDepot : MonoBehaviour
                 {
                     if (carePackageDelivery.deliveryTime > lastDelivery)
                     {
+                        carePackageDelivery.delivered = true;
                         CreateBox(carePackageDelivery);
 
                         lastDelivery = Time.time;
@@ -87,7 +89,15 @@ public class CarePackageDepot : MonoBehaviour
             }
         }
 
-        // TODO: Periodically clear new deliveries.
+
+        // Periodically clear new deliveries.
+        for (int i = deliveryHistory.Count - 1; i >= 0; --i)
+        {
+            if (Time.time - deliveryHistory[i].deliveryTime > 60)
+            {
+                deliveryHistory.RemoveAt(i);
+            }
+        }
 
     }
 
