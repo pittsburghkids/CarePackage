@@ -41,7 +41,7 @@ public class DepotScanner : MonoBehaviour
                 if (i < itemLayout.transform.childCount)
                 {
                     string itemName = box.carePackageDelivery.itemNames[i];
-                    Sprite sprite = CarePackage.Instance.GetSpriteForItemName(itemName);
+                    Sprite sprite = CarePackage.Instance.GetSpriteForIconName(itemName);
 
                     Transform itemTransform = itemLayout.transform.GetChild(i);
                     Image itemImage = itemTransform.GetComponent<Image>();

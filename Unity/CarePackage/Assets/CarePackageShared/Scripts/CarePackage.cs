@@ -81,6 +81,7 @@ public class CarePackage : MonoBehaviour
     private Dictionary<string, Sprite> spriteMapItems = new Dictionary<string, Sprite>();
     private Dictionary<string, Sprite> spriteMapDestinations = new Dictionary<string, Sprite>();
     private Dictionary<string, Sprite> spriteMapLabels = new Dictionary<string, Sprite>();
+    private Dictionary<string, Sprite> spriteMapIcons = new Dictionary<string, Sprite>();
 
 
     // Box tracking.
@@ -208,6 +209,8 @@ public class CarePackage : MonoBehaviour
 
     IEnumerator CreateSprites(CarePackageConfig carePackageConfig)
     {
+        // Items.
+
         foreach (CarePackageItemConfig carePackageItem in carePackageConfig.items)
         {
             string url = string.Format("http://localhost:8080/images/items/{0}.png", carePackageItem.name);
@@ -234,6 +237,35 @@ public class CarePackage : MonoBehaviour
             }
         }
 
+        // Icons.
+
+        foreach (CarePackageItemConfig carePackageItem in carePackageConfig.items)
+        {
+            string url = string.Format("http://localhost:8080/images/icons/{0}.png", carePackageItem.name);
+
+            Debug.Log("Downloading icon image for " + carePackageItem.name);
+
+            using (UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(url))
+            {
+                yield return unityWebRequest.SendWebRequest();
+
+                if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
+                {
+                    Debug.Log(unityWebRequest.error);
+                }
+                else
+                {
+                    Texture2D iconTexture = DownloadHandlerTexture.GetContent(unityWebRequest);
+                    Debug.Log("Creating icon sprite for " + carePackageItem.name);
+
+                    // Create and store sprite.
+                    Sprite iconSprite = Sprite.Create(iconTexture, new Rect(0, 0, iconTexture.width, iconTexture.height), new Vector2(.5f, .5f), 8000);
+                    spriteMapIcons.Add(carePackageItem.name, iconSprite);
+                }
+            }
+        }
+
+        // Destinations.
 
         foreach (CarePackageDestinationConfig carePackageDestination in carePackageConfig.destinations)
         {
@@ -260,6 +292,8 @@ public class CarePackage : MonoBehaviour
                 }
             }
         }
+
+        // Labels.
 
         foreach (CarePackageDestinationConfig carePackageDestination in carePackageConfig.destinations)
         {
@@ -418,6 +452,15 @@ public class CarePackage : MonoBehaviour
         if (spriteMapItems.ContainsKey(name))
         {
             return spriteMapItems[name];
+        }
+        return null;
+    }
+
+    public Sprite GetSpriteForIconName(string name)
+    {
+        if (spriteMapIcons.ContainsKey(name))
+        {
+            return spriteMapIcons[name];
         }
         return null;
     }
