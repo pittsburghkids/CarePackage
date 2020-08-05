@@ -416,6 +416,11 @@ public class CarePackage : MonoBehaviour
         // Make an array and shuffle it.
         string[] itemNameArray = spriteMapItems.Keys.ToArray();
 
+        if (itemNameArray.Length == 0)
+        {
+            return null;
+        }
+
         for (int i = 0; i < itemNameArray.Length; i++)
         {
             int j = Random.Range(i, itemNameArray.Length);
