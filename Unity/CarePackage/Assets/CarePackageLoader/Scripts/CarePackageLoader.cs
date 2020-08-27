@@ -260,7 +260,11 @@ public class CarePackageLoader : MonoBehaviour
 
             Sprite itemSprite = carePackage.GetSpriteForItemName(itemName);
             SpriteRenderer spriteRenderer = itemInstance.GetComponent<SpriteRenderer>();
-            spriteRenderer.sprite = itemSprite;
+
+            if (itemSprite != null)
+            {
+                spriteRenderer.sprite = itemSprite;
+            }
 
             itemInstance.name = itemName;
         }
@@ -276,7 +280,11 @@ public class CarePackageLoader : MonoBehaviour
 
         Sprite labelSprite = carePackage.GetSpriteForLabelName(destinationName);
         SpriteRenderer spriteRenderer = labelInstance.GetComponent<SpriteRenderer>();
-        spriteRenderer.sprite = labelSprite;
+
+        if (labelSprite != null)
+        {
+            spriteRenderer.sprite = labelSprite;
+        }
 
         yield return new WaitForSeconds(destinationDisplayTime);
 
