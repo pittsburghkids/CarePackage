@@ -13,7 +13,7 @@ public class Item : MonoBehaviour
         transform.localPosition = position;
         Destroy(gameObject, 2f);
 
-        rotationRate = Random.Range(-Mathf.PI, Mathf.PI);
+        rotationRate = Random.Range(-Mathf.PI / 2, Mathf.PI / 2);
     }
 
     void Update()
