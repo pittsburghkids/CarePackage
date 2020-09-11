@@ -227,11 +227,15 @@ public class CarePackage : MonoBehaviour
                 }
                 else
                 {
-                    Texture2D itemTexture = DownloadHandlerTexture.GetContent(unityWebRequest);
+                    Texture2D texture = DownloadHandlerTexture.GetContent(unityWebRequest);
                     Debug.Log("Creating item sprite for " + carePackageItem.name);
 
+                    texture.wrapMode = TextureWrapMode.Clamp;
+                    texture.filterMode = FilterMode.Trilinear;
+                    texture.anisoLevel = 5;
+
                     // Create and store sprite.
-                    Sprite itemSprite = Sprite.Create(itemTexture, new Rect(0, 0, itemTexture.width, itemTexture.height), new Vector2(.5f, .5f), 8000);
+                    Sprite itemSprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(.5f, .5f), 8196);
                     spriteMapItems.Add(carePackageItem.name, itemSprite);
                 }
             }
@@ -255,11 +259,15 @@ public class CarePackage : MonoBehaviour
                 }
                 else
                 {
-                    Texture2D iconTexture = DownloadHandlerTexture.GetContent(unityWebRequest);
+                    Texture2D texture = DownloadHandlerTexture.GetContent(unityWebRequest);
                     Debug.Log("Creating icon sprite for " + carePackageItem.name);
 
+                    texture.wrapMode = TextureWrapMode.Clamp;
+                    texture.filterMode = FilterMode.Trilinear;
+                    texture.anisoLevel = 5;
+
                     // Create and store sprite.
-                    Sprite iconSprite = Sprite.Create(iconTexture, new Rect(0, 0, iconTexture.width, iconTexture.height), new Vector2(.5f, .5f), 8000);
+                    Sprite iconSprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(.5f, .5f), 8196);
                     spriteMapIcons.Add(carePackageItem.name, iconSprite);
                 }
             }
@@ -283,11 +291,15 @@ public class CarePackage : MonoBehaviour
                 }
                 else
                 {
-                    Texture2D itemTexture = DownloadHandlerTexture.GetContent(unityWebRequest);
+                    Texture2D texture = DownloadHandlerTexture.GetContent(unityWebRequest);
                     Debug.Log("Creating destination sprite for " + carePackageDestination.name);
 
+                    texture.wrapMode = TextureWrapMode.Clamp;
+                    texture.filterMode = FilterMode.Trilinear;
+                    texture.anisoLevel = 5;
+
                     // Create and store sprite.
-                    Sprite destinationSprite = Sprite.Create(itemTexture, new Rect(0, 0, itemTexture.width, itemTexture.height), new Vector2(.5f, .5f), 100);
+                    Sprite destinationSprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(.5f, .5f), 100);
                     spriteMapDestinations.Add(carePackageDestination.name, destinationSprite);
                 }
             }
@@ -311,11 +323,15 @@ public class CarePackage : MonoBehaviour
                 }
                 else
                 {
-                    Texture2D itemTexture = DownloadHandlerTexture.GetContent(unityWebRequest);
+                    Texture2D texture = DownloadHandlerTexture.GetContent(unityWebRequest);
                     Debug.Log("Creating label sprite for " + carePackageDestination.name);
 
+                    texture.wrapMode = TextureWrapMode.Clamp;
+                    texture.filterMode = FilterMode.Trilinear;
+                    texture.anisoLevel = 5;
+
                     // Create and store sprite.
-                    Sprite labelSprite = Sprite.Create(itemTexture, new Rect(0, 0, itemTexture.width, itemTexture.height), new Vector2(.5f, .5f), 8000);
+                    Sprite labelSprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(.5f, .5f), 8196);
                     spriteMapLabels.Add(carePackageDestination.name, labelSprite);
                 }
             }
