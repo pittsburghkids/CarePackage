@@ -67,11 +67,16 @@ public class CarePackage : MonoBehaviour
     public WebSocketBridge webSocketBridge;
 
     // Data recieved events.
-    public delegate void DataAction(CarePackageData carePackageData);
-    public event DataAction OnData;
+    public delegate void DataDelegate(CarePackageData carePackageData);
+    public event DataDelegate OnData;
 
     // Config object loaded from config.json.
     public CarePackageConfig carePackageConfig;
+
+    // Config events.
+    public bool ConfigLoaded { get; private set; } = false;
+    public delegate void ConfigDelegate();
+    public event ConfigDelegate OnConfigLoaded;
 
     // Storage map for items placed in boxes and destinations.
     private Dictionary<string, List<string>> storageMap = new Dictionary<string, List<string>>();
@@ -81,7 +86,7 @@ public class CarePackage : MonoBehaviour
     private Dictionary<string, Sprite> spriteMapItems = new Dictionary<string, Sprite>();
     private Dictionary<string, Sprite> spriteMapDestinations = new Dictionary<string, Sprite>();
     private Dictionary<string, Sprite> spriteMapLabels = new Dictionary<string, Sprite>();
-    private Dictionary<string, Sprite> spriteMapIcons = new Dictionary<string, Sprite>();
+    //private Dictionary<string, Sprite> spriteMapIcons = new Dictionary<string, Sprite>();
 
 
     // Box tracking.
@@ -202,6 +207,9 @@ public class CarePackage : MonoBehaviour
 
     private void ProcessConfig(string configString)
     {
+        ConfigLoaded = true;
+        if (OnConfigLoaded != null) OnConfigLoaded();
+
         carePackageConfig = JsonUtility.FromJson<CarePackageConfig>(configString);
 
         StartCoroutine(CreateSprites(carePackageConfig));
@@ -246,38 +254,38 @@ public class CarePackage : MonoBehaviour
 
         // Icons.
 
-        foreach (CarePackageItemConfig carePackageItem in carePackageConfig.items)
-        {
-            string url = string.Format("http://localhost:8080/images/icons/{0}.png", carePackageItem.name);
+        // foreach (CarePackageItemConfig carePackageItem in carePackageConfig.items)
+        // {
+        //     string url = string.Format("http://localhost:8080/images/icons/{0}.png", carePackageItem.name);
 
-            Debug.Log("Downloading icon image for " + carePackageItem.name);
+        //     Debug.Log("Downloading icon image for " + carePackageItem.name);
 
-            using (UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(url))
-            {
-                yield return unityWebRequest.SendWebRequest();
+        //     using (UnityWebRequest unityWebRequest = UnityWebRequestTexture.GetTexture(url))
+        //     {
+        //         yield return unityWebRequest.SendWebRequest();
 
-                if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
-                {
-                    Debug.Log(unityWebRequest.error);
-                }
-                else
-                {
-                    Texture2D downloadedTexture = DownloadHandlerTexture.GetContent(unityWebRequest);
-                    Debug.Log("Creating icon sprite for " + carePackageItem.name);
+        //         if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
+        //         {
+        //             Debug.Log(unityWebRequest.error);
+        //         }
+        //         else
+        //         {
+        //             Texture2D downloadedTexture = DownloadHandlerTexture.GetContent(unityWebRequest);
+        //             Debug.Log("Creating icon sprite for " + carePackageItem.name);
 
-                    Texture2D texture = new Texture2D(downloadedTexture.width, downloadedTexture.height);
-                    texture.SetPixels(downloadedTexture.GetPixels(0));
-                    texture.Apply();
-                    texture.wrapMode = TextureWrapMode.Clamp;
-                    texture.filterMode = FilterMode.Trilinear;
-                    texture.anisoLevel = 5;
+        //             Texture2D texture = new Texture2D(downloadedTexture.width, downloadedTexture.height);
+        //             texture.SetPixels(downloadedTexture.GetPixels(0));
+        //             texture.Apply();
+        //             texture.wrapMode = TextureWrapMode.Clamp;
+        //             texture.filterMode = FilterMode.Trilinear;
+        //             texture.anisoLevel = 5;
 
-                    // Create and store sprite.
-                    Sprite iconSprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(.5f, .5f), 8196);
-                    spriteMapIcons.Add(carePackageItem.name, iconSprite);
-                }
-            }
-        }
+        //             // Create and store sprite.
+        //             Sprite iconSprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(.5f, .5f), 8196);
+        //             spriteMapIcons.Add(carePackageItem.name, iconSprite);
+        //         }
+        //     }
+        // }
 
         // Destinations.
 
@@ -489,14 +497,14 @@ public class CarePackage : MonoBehaviour
         return null;
     }
 
-    public Sprite GetSpriteForIconName(string name)
-    {
-        if (spriteMapIcons.ContainsKey(name))
-        {
-            return spriteMapIcons[name];
-        }
-        return null;
-    }
+    // public Sprite GetSpriteForIconName(string name)
+    // {
+    //     if (spriteMapIcons.ContainsKey(name))
+    //     {
+    //         return spriteMapIcons[name];
+    //     }
+    //     return null;
+    // }
 
     // Get sprite image for destination name.
     public Sprite GetSpriteForDestinationName(string name)
