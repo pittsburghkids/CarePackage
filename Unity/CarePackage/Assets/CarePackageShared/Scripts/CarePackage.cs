@@ -227,9 +227,12 @@ public class CarePackage : MonoBehaviour
                 }
                 else
                 {
-                    Texture2D texture = DownloadHandlerTexture.GetContent(unityWebRequest);
+                    Texture2D downloadedTexture = DownloadHandlerTexture.GetContent(unityWebRequest);
                     Debug.Log("Creating item sprite for " + carePackageItem.name);
 
+                    Texture2D texture = new Texture2D(downloadedTexture.width, downloadedTexture.height);
+                    texture.SetPixels(downloadedTexture.GetPixels(0));
+                    texture.Apply();
                     texture.wrapMode = TextureWrapMode.Clamp;
                     texture.filterMode = FilterMode.Trilinear;
                     texture.anisoLevel = 5;
@@ -259,9 +262,12 @@ public class CarePackage : MonoBehaviour
                 }
                 else
                 {
-                    Texture2D texture = DownloadHandlerTexture.GetContent(unityWebRequest);
+                    Texture2D downloadedTexture = DownloadHandlerTexture.GetContent(unityWebRequest);
                     Debug.Log("Creating icon sprite for " + carePackageItem.name);
 
+                    Texture2D texture = new Texture2D(downloadedTexture.width, downloadedTexture.height);
+                    texture.SetPixels(downloadedTexture.GetPixels(0));
+                    texture.Apply();
                     texture.wrapMode = TextureWrapMode.Clamp;
                     texture.filterMode = FilterMode.Trilinear;
                     texture.anisoLevel = 5;
@@ -291,9 +297,12 @@ public class CarePackage : MonoBehaviour
                 }
                 else
                 {
-                    Texture2D texture = DownloadHandlerTexture.GetContent(unityWebRequest);
+                    Texture2D downloadedTexture = DownloadHandlerTexture.GetContent(unityWebRequest);
                     Debug.Log("Creating destination sprite for " + carePackageDestination.name);
 
+                    Texture2D texture = new Texture2D(downloadedTexture.width, downloadedTexture.height);
+                    texture.SetPixels(downloadedTexture.GetPixels(0));
+                    texture.Apply();
                     texture.wrapMode = TextureWrapMode.Clamp;
                     texture.filterMode = FilterMode.Trilinear;
                     texture.anisoLevel = 5;
@@ -323,9 +332,12 @@ public class CarePackage : MonoBehaviour
                 }
                 else
                 {
-                    Texture2D texture = DownloadHandlerTexture.GetContent(unityWebRequest);
+                    Texture2D downloadedTexture = DownloadHandlerTexture.GetContent(unityWebRequest);
                     Debug.Log("Creating label sprite for " + carePackageDestination.name);
 
+                    Texture2D texture = new Texture2D(downloadedTexture.width, downloadedTexture.height);
+                    texture.SetPixels(downloadedTexture.GetPixels(0));
+                    texture.Apply();
                     texture.wrapMode = TextureWrapMode.Clamp;
                     texture.filterMode = FilterMode.Trilinear;
                     texture.anisoLevel = 5;
