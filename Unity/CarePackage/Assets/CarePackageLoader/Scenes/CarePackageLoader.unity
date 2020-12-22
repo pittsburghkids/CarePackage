@@ -607,8 +607,8 @@ MonoBehaviour:
   loaderSceneRoot: {fileID: 1234326598}
   insertBox: {fileID: 1962208654}
   insertItem: {fileID: 804670474}
-  chooseAddressA: {fileID: 1811141232}
-  chooseAddressB: {fileID: 593780727}
+  chooseAddressA: {fileID: 593780727}
+  chooseAddressB: {fileID: 1811141232}
   rootTransform: {fileID: 1234326599}
   itemPrefab: {fileID: 8880520497481660958, guid: a87d07cfa558d4321a6f3a55b1ceac16,
     type: 3}
