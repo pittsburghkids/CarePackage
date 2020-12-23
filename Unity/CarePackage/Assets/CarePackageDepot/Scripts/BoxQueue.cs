@@ -27,9 +27,11 @@ public class BoxQueue : MonoBehaviour
         boxClear = true;
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider collider)
     {
-        Mover mover = other.transform.parent.GetComponent<Mover>();
+
+        Box box = collider.gameObject.GetComponent<Box>();
+        Mover mover = box.Mover;
 
         mover.autoUnpause = false;
         mover.Pause();

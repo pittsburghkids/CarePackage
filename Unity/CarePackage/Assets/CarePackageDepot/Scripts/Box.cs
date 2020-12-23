@@ -14,6 +14,23 @@ public class Box : MonoBehaviour
 
     public CarePackageDelivery carePackageDelivery;
 
+    public bool HasAddress
+    {
+        get
+        {
+            return !(string.IsNullOrEmpty(carePackageDelivery.destinationName));
+        }
+    }
+
+    public Mover Mover
+    {
+        get
+        {
+            // TODO(SJG) Cache this.
+            return transform.parent.GetComponent<Mover>();
+        }
+    }
+
     public void Deliver()
     {
         CarePackageDepot.Instance.SetDestinationSprite(carePackageDelivery.destinationName);
@@ -22,6 +39,12 @@ public class Box : MonoBehaviour
     public void Open()
     {
         GetComponent<Animator>().SetTrigger("Open");
+    }
+
+    public void Reject()
+    {
+        // TODO(SJG) Move this to mover?
+        Mover.GetComponent<Animator>().SetBool("Reject", true);
     }
 
     // Called by DepotStamp during animation.
@@ -52,42 +75,36 @@ public class Box : MonoBehaviour
     {
         confetti.SetActive(true);
 
-        List<string> itemNames;
-
+        // Emit items one at a time.
         if (carePackageDelivery != null && carePackageDelivery.itemNames != null)
         {
-            itemNames = carePackageDelivery.itemNames;
-        }
-        else
-        {
-            itemNames = CarePackage.Instance.GetRandomItemNameList(8);
-        }
+            List<string> itemNames = carePackageDelivery.itemNames;
 
-        //
+            int itemCount = Mathf.Min(itemNames.Count, 16);
+            float itemDelay = emitDuration / itemCount;
 
-        int itemCount = (itemNames.Count <= 15) ? itemNames.Count : 15;
-        float itemDelay = emitDuration / itemCount;
-
-        for (int i = 0; i < itemCount; i++)
-        {
-            string itemName = itemNames[i];
-
-            if (itemName != null)
+            for (int i = 0; i < itemCount; i++)
             {
-                GameObject itemInstance = Instantiate(itemPrefab);
-                itemInstance.transform.position = itemSpawnPoint.position;
-                itemInstance.name = itemName;
+                string itemName = itemNames[i];
 
-                Sprite itemSprite = CarePackage.Instance.GetSpriteForItemName(itemName);
-                SpriteRenderer spriteRenderer = itemInstance.GetComponent<SpriteRenderer>();
-                spriteRenderer.sprite = itemSprite;
+                if (itemName != null)
+                {
+                    GameObject itemInstance = Instantiate(itemPrefab);
+                    itemInstance.transform.position = itemSpawnPoint.position;
+                    itemInstance.name = itemName;
 
-                Debug.Log("Emitting: " + itemInstance.name);
+                    Sprite itemSprite = CarePackage.Instance.GetSpriteForItemName(itemName);
+                    SpriteRenderer spriteRenderer = itemInstance.GetComponent<SpriteRenderer>();
+                    spriteRenderer.sprite = itemSprite;
 
-                yield return new WaitForSeconds(itemDelay);
+                    Debug.Log("Emitting: " + itemInstance.name);
+
+                    yield return new WaitForSeconds(itemDelay);
+                }
             }
         }
 
+        // Additional post-item wait time.
         yield return new WaitForSeconds(delayDuration);
 
         // Close box and door when finished emitting.

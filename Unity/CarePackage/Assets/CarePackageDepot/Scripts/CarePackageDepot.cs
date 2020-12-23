@@ -268,4 +268,11 @@ public class CarePackageDepot : MonoBehaviour
         boxCount--;
     }
 
+    public void DestroyBox(Box box)
+    {
+        Destroy(box.Mover.gameObject);
+
+        boxCount--;
+    }
+
 }
