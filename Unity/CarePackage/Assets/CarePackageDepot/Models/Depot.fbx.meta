@@ -22,6 +22,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: DepotDisplayMaterial
+    second: {fileID: 2100000, guid: abfe1ab55632da64b87644f75cdf8b96, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: DepotDoorMaterial
     second: {fileID: 2100000, guid: 8f987f0a60ee53548b25c0941b78b0b8, type: 2}
   - first:
