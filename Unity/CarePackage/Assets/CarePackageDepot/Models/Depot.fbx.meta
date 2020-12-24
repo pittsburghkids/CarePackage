@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: c501cb19171d7433993c71149d3f5b04
 ModelImporter:
-  serializedVersion: 19301
+  serializedVersion: 20200
   internalIDToNameTable: []
   externalObjects:
   - first:
@@ -23,7 +23,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: DepotDoorMaterial
-    second: {fileID: 2100000, guid: 3f29d4292444e4fc0934851f5abfdf01, type: 2}
+    second: {fileID: 2100000, guid: 8f987f0a60ee53548b25c0941b78b0b8, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
@@ -53,7 +53,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: DepotMaterial
-    second: {fileID: 2100000, guid: 1112a94b513344924931da602b393ed0, type: 2}
+    second: {fileID: 2100000, guid: 85473fefcd7cff1498bb81fc900613f6, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
@@ -64,6 +64,16 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: DepotStampMaterial
     second: {fileID: 2100000, guid: b0f55482b80e34a6aba2fcfc1e1e93a8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: DepotSwitchMaterial
+    second: {fileID: 2100000, guid: bbfcc9e6e64fd2d4aad9f5df716c69a1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: DepotSwitchPanelMaterial
+    second: {fileID: 2100000, guid: 85473fefcd7cff1498bb81fc900613f6, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
@@ -119,6 +129,7 @@ ModelImporter:
     useFileUnits: 1
     keepQuads: 0
     weldVertices: 1
+    bakeAxisConversion: 0
     preserveHierarchy: 0
     skinWeightsMode: 0
     maxBonesPerVertex: 4
@@ -128,10 +139,13 @@ ModelImporter:
     secondaryUVAngleDistortion: 4
     secondaryUVAreaDistortion: 4
     secondaryUVHardAngle: 60
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 0
   tangentSpace:
-    normalSmoothAngle: 60
+    normalSmoothAngle: 164
     normalImportMode: 0
     tangentImportMode: 3
     normalCalculationMode: 4
@@ -161,6 +175,7 @@ ModelImporter:
   animationType: 0
   humanoidOversampling: 1
   avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
   additionalBone: 0
   userData: 
   assetBundleName: 
