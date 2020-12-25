@@ -5,15 +5,15 @@ using UnityEngine;
 public class StampTriggerHandler : MonoBehaviour, ITriggerHandler
 {
     [SerializeField] Animator animator = default;
-    [SerializeField] AnimationEventBridge animationEventBridge = default;
+    [SerializeField] AnimatorBridge animationEventBridge = default;
 
-    private Box lastBox;
+    private Box currentBox;
 
     void Start()
     {
         animationEventBridge.OnAnimationBridgeEvent += (AnimationEvent animationEvent) =>
         {
-            lastBox?.ShowDecal();
+            currentBox?.ShowDecal();
         };
     }
 
@@ -22,7 +22,7 @@ public class StampTriggerHandler : MonoBehaviour, ITriggerHandler
         animator.SetTrigger("Activate");
 
         Box box = collider.gameObject.GetComponent<Box>();
-        lastBox = box;
+        currentBox = box;
     }
 
     public void OnTriggerExit(Collider collider)

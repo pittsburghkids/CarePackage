@@ -12,8 +12,6 @@ public class BoxItem : MonoBehaviour
     private float gravity = 4;
     private float drag = .2f;
 
-
-    // Start is called before the first frame update
     void Start()
     {
         velocity = ((Vector3.up * Random.Range(1.5f, 2.5f)) + (Vector3.right * Random.Range(-1f, 1f)));
@@ -21,7 +19,6 @@ public class BoxItem : MonoBehaviour
         Destroy(gameObject, lifeTime);
     }
 
-    // Update is called once per frame
     void Update()
     {
         float t = (Time.time - startTime) / lifeTime;

@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class ScannerTriggerHandler : MonoBehaviour, ITriggerHandler
 {
-    [SerializeField] Animator animator = default;
-    [SerializeField] GameObject itemLayout = default;
+   [SerializeField] GameObject itemLayout = default;
+   [SerializeField] GameObject errorDisplay = default;
 
     public void Start()
     {
@@ -25,7 +25,7 @@ public class ScannerTriggerHandler : MonoBehaviour, ITriggerHandler
         }
 
         // Set item sprites.
-        if (box.carePackageDelivery.itemNames != null)
+        if (box.HasItems)
         {
             for (int i = 0; i < box.carePackageDelivery.itemNames.Count; i++)
             {
@@ -40,13 +40,19 @@ public class ScannerTriggerHandler : MonoBehaviour, ITriggerHandler
                     itemTransform.gameObject.SetActive(true);
                 }
             }
-        }
 
-        itemLayout.SetActive(true);
+            Debug.Log("ScannerTriggerHandler: Scan box with items.");
+            itemLayout.SetActive(true);
+        } else {
+            Debug.Log("ScannerTriggerHandler: Scan box with no items.");
+            errorDisplay.SetActive(true);
+        }
     }
 
+    // TODO(SJG): Instead of doing this on exit, set a timer that resets when a new box enters.
     public void OnTriggerExit(Collider collider)
     {
         itemLayout.SetActive(false);
+        errorDisplay.SetActive(false);
     }
 }

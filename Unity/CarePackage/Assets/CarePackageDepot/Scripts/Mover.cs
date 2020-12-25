@@ -12,17 +12,24 @@ public class Mover : MonoBehaviour
     public void SetPackage(Box box)
     {
         this.box = box;
+        box.mover = this;
 
         box.transform.parent = transform;
         box.transform.localPosition = Vector3.zero;
         box.transform.localRotation = Quaternion.identity;
     }
 
+    public void Reject()
+    {
+        Animator animator = GetComponent<Animator>();
+        animator.SetBool("Reject", true);
+    }
+
     // This is called by an event in the animation clip "MoverLift".
     public void MoverLiftUp()
     {
         // This will set the destination background sprite.
-        box.Deliver();
+        CarePackageDepot.Instance.SetDestinationSprite(box.carePackageDelivery.destinationName);
 
         // This will trigger animations for the door and lift.
         CarePackageDepot.Instance.LiftUp();

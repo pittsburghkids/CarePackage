@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
-
 // TODO(SJG) Store sprites instead of names for destintion and items?
 [System.Serializable]
 public class CarePackageDelivery
@@ -31,9 +30,10 @@ public class CarePackageDepot : MonoBehaviour
     [SerializeField] BoxQueue boxQueue = default;
 
     [Header("Enivronment")]
-    public DepotDoor depotDoor = default;
-    public DepotLift depotLift = default;
-    public DepotGrabber depotGrabber = default;
+    public AnimatorBridge doorAnimatorBridge = default;
+    public AnimatorBridge liftAnimatorBridge = default;
+    public AnimatorBridge grabberAnimatorBridge = default;
+    public AnimatorBridge switchAnimatorBridge = default;
 
     // Points to CarePackage.Instance.
     private CarePackage carePackage;
@@ -65,6 +65,26 @@ public class CarePackageDepot : MonoBehaviour
     {
         carePackage = CarePackage.Instance;
         carePackage.OnData += OnCarePackageData;
+
+        doorAnimatorBridge.OnAnimationBridgeEvent += (AnimationEvent animationEvent) =>
+        {
+            if (animationEvent.stringParameter == "DepotDoorOpening")
+            {
+
+            }
+            else if (animationEvent.stringParameter == "DepotDoorClosed")
+            {
+                Debug.Log("DepotDoorClosed");
+
+                // Delete the mover that asked for door open.
+                Destroy(doorCaller);
+
+                // Clear lift queue for next box.
+                boxQueue.ClearBoxes = true;
+
+                boxCount--;
+            }
+        };
     }
 
     void Update()
@@ -183,10 +203,10 @@ public class CarePackageDepot : MonoBehaviour
         box.carePackageDelivery = carePackageDelivery;
 
         // Choose side or top mover.
-        GameObject movderPrefab = (carePackageDelivery.boardName == "DepotBoxA") ? sideMoverPrefab : topMoverPrefab;
+        GameObject moverPrefab = (carePackageDelivery.boardName == "DepotBoxA") ? sideMoverPrefab : topMoverPrefab;
 
         // Create the box mover.
-        GameObject moverInstance = Instantiate(movderPrefab, moverContainer);
+        GameObject moverInstance = Instantiate(moverPrefab, moverContainer);
         moverInstance.name = "Mover_" + moverIndex;
 
         // Initialize the box mover.
@@ -230,48 +250,30 @@ public class CarePackageDepot : MonoBehaviour
 
     public void GrabberGrab()
     {
-        depotGrabber.Animator.SetTrigger("Grab");
+        grabberAnimatorBridge.Animator.SetTrigger("Grab");
     }
 
     public void LiftUp()
     {
-        depotLift.Animator.SetTrigger("Up");
+        liftAnimatorBridge.Animator.SetTrigger("Up");
     }
 
     public void OpenDoor(GameObject doorCaller)
     {
         this.doorCaller = doorCaller;
-        depotDoor.Animator.SetBool("Open", true);
+        doorAnimatorBridge.Animator.SetBool("Open", true);
+        switchAnimatorBridge.Animator.SetBool("Up", true);
     }
 
     public void CloseDoor()
     {
-        depotDoor.Animator.SetBool("Open", false);
-    }
-
-    // Animation events.
-    public void DoorOpening()
-    {
-
-    }
-
-    public void DoorClosed()
-    {
-        Debug.Log("DoorClosed");
-
-        // Delete the mover that asked for door open.
-        Destroy(doorCaller);
-
-        // Clear lift queue for next box.
-        boxQueue.BoxClear();
-
-        boxCount--;
+        doorAnimatorBridge.Animator.SetBool("Open", false);
+        switchAnimatorBridge.Animator.SetBool("Up", false);
     }
 
     public void DestroyBox(Box box)
     {
-        Destroy(box.Mover.gameObject);
-
+        Destroy(box.mover.gameObject);
         boxCount--;
     }
 

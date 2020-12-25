@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-
 public class CounterTriggerHandler : MonoBehaviour, ITriggerHandler
 {
     private const float RejectDisplayDuration = 2;
@@ -16,7 +15,7 @@ public class CounterTriggerHandler : MonoBehaviour, ITriggerHandler
     private int deliveryCount = 0;
     private int lastDay = -1;
 
-    void Start()
+    void Update()
     {
         // Reset delivery count every day.
         int currentDay = System.DateTime.Now.Day;
@@ -43,14 +42,13 @@ public class CounterTriggerHandler : MonoBehaviour, ITriggerHandler
         {
             // Reject box.
             Debug.Log("DepotCounter: Reject box with no address.");
-            box.Reject();
+            box.mover.Reject();
 
             doorAnimator.SetBool("Open", true);
 
             countDisplay.SetActive(false);
             rejectDisplay.SetActive(true);
         }
-
     }
 
     public void OnTriggerExit(Collider collider)
@@ -60,5 +58,4 @@ public class CounterTriggerHandler : MonoBehaviour, ITriggerHandler
 
         doorAnimator.SetBool("Open", false);
     }
-
 }

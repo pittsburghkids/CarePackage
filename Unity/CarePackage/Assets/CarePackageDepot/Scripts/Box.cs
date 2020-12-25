@@ -13,6 +13,7 @@ public class Box : MonoBehaviour
     [SerializeField] GameObject decal = default;
 
     public CarePackageDelivery carePackageDelivery;
+    public Mover mover;
 
     public bool HasAddress
     {
@@ -22,29 +23,18 @@ public class Box : MonoBehaviour
         }
     }
 
-    public Mover Mover
+    public bool HasItems
     {
         get
         {
-            // TODO(SJG) Cache this.
-            return transform.parent.GetComponent<Mover>();
+            return (carePackageDelivery.itemNames != null && carePackageDelivery.itemNames.Count > 0);
         }
     }
 
-    public void Deliver()
-    {
-        CarePackageDepot.Instance.SetDestinationSprite(carePackageDelivery.destinationName);
-    }
-
+    // Called by the mover when its animation completes.
     public void Open()
     {
         GetComponent<Animator>().SetTrigger("Open");
-    }
-
-    public void Reject()
-    {
-        // TODO(SJG) Move this to mover?
-        Mover.GetComponent<Animator>().SetBool("Reject", true);
     }
 
     // Called by DepotStamp during animation.

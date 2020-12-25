@@ -1,12 +1,19 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-
-
-public class AnimationEventBridge : MonoBehaviour
+[RequireComponent(typeof(Animator))]
+public class AnimatorBridge : MonoBehaviour
 {
     public delegate void AnimationBridgeEventDelegate(AnimationEvent animationEvent);
     public event AnimationBridgeEventDelegate OnAnimationBridgeEvent;
+
+    public Animator Animator
+    {
+        get
+        {
+            return GetComponent<Animator>();
+        }
+    }
 
     public void OnAnimationEvent(AnimationEvent animationEvent)
     {

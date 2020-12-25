@@ -4,34 +4,28 @@ using UnityEngine;
 
 public class BoxQueue : MonoBehaviour
 {
-    public bool autoClear = false;
+    public bool ClearBoxes { get; set; } = true;
 
+    [SerializeField] private bool autoClear = false;
     private Queue<Mover> moverQueue = new Queue<Mover>();
-    private bool boxClear = true;
 
     void Update()
     {
-        if (boxClear && moverQueue.Count > 0)
+        if (ClearBoxes && moverQueue.Count > 0)
         {
             Mover mover = moverQueue.Dequeue();
 
             mover.Unpause();
             mover.autoUnpause = true;
 
-            boxClear = false;
+            ClearBoxes = false;
         }
-    }
-
-    public void BoxClear()
-    {
-        boxClear = true;
     }
 
     private void OnTriggerEnter(Collider collider)
     {
-
         Box box = collider.gameObject.GetComponent<Box>();
-        Mover mover = box.Mover;
+        Mover mover = box.mover;
 
         mover.autoUnpause = false;
         mover.Pause();
@@ -43,7 +37,7 @@ public class BoxQueue : MonoBehaviour
     {
         if (autoClear)
         {
-            BoxClear();
+            ClearBoxes = true;
         }
     }
 
