@@ -432,45 +432,45 @@ public class CarePackage : MonoBehaviour
         if (destinationMap.ContainsKey(boxName)) { destinationMap[boxName] = null; }
     }
 
-    public string GetRandomDestinationName()
-    {
-        string destinationName = null;
+    // public string GetRandomDestinationName()
+    // {
+    //     string destinationName = null;
 
-        if (spriteMapDestinations.Count > 0)
-        {
-            int spriteIndex = Random.Range(0, spriteMapDestinations.Count);
-            destinationName = spriteMapDestinations.ElementAt(spriteIndex).Key;
-        }
+    //     if (spriteMapDestinations.Count > 0)
+    //     {
+    //         int spriteIndex = Random.Range(0, spriteMapDestinations.Count);
+    //         destinationName = spriteMapDestinations.ElementAt(spriteIndex).Key;
+    //     }
 
-        return destinationName;
-    }
+    //     return destinationName;
+    // }
 
-    public List<string> GetRandomItemNameList(int count)
-    {
-        List<string> itemNames = null;
+    // public List<string> GetRandomItemNameList(int count)
+    // {
+    //     List<string> itemNames = null;
 
-        // Make an array and shuffle it.
-        string[] itemNameArray = spriteMapItems.Keys.ToArray();
+    //     // Make an array and shuffle it.
+    //     string[] itemNameArray = spriteMapItems.Keys.ToArray();
 
-        if (itemNameArray.Length == 0)
-        {
-            return null;
-        }
+    //     if (itemNameArray.Length == 0)
+    //     {
+    //         return null;
+    //     }
 
-        for (int i = 0; i < itemNameArray.Length; i++)
-        {
-            int j = Random.Range(i, itemNameArray.Length);
+    //     for (int i = 0; i < itemNameArray.Length; i++)
+    //     {
+    //         int j = Random.Range(i, itemNameArray.Length);
 
-            string temp = itemNameArray[i];
-            itemNameArray[i] = itemNameArray[j];
-            itemNameArray[j] = temp;
-        }
+    //         string temp = itemNameArray[i];
+    //         itemNameArray[i] = itemNameArray[j];
+    //         itemNameArray[j] = temp;
+    //     }
 
-        itemNames = new List<string>(itemNameArray);
-        itemNames = itemNames.GetRange(0, count);
+    //     itemNames = new List<string>(itemNameArray);
+    //     itemNames = itemNames.GetRange(0, count);
 
-        return itemNames;
-    }
+    //     return itemNames;
+    // }
 
 
     // Find board by serial number.
@@ -508,15 +508,15 @@ public class CarePackage : MonoBehaviour
     }
 
     // Get random destination sprite.
-    public Sprite GetRandomDestinationSprite()
-    {
-        // No destinations available.
-        if (spriteMapDestinations.Count == 0) return null;
+    // public Sprite GetRandomDestinationSprite()
+    // {
+    //     // No destinations available.
+    //     if (spriteMapDestinations.Count == 0) return null;
 
-        int spriteIndex = Random.Range(0, spriteMapDestinations.Count);
-        Sprite destinationSprite = spriteMapDestinations.ElementAt(spriteIndex).Value;
-        return destinationSprite;
-    }
+    //     int spriteIndex = Random.Range(0, spriteMapDestinations.Count);
+    //     Sprite destinationSprite = spriteMapDestinations.ElementAt(spriteIndex).Value;
+    //     return destinationSprite;
+    // }
 
     // Get sprite image for label name.
     public Sprite GetSpriteForLabelName(string name)
@@ -525,6 +525,7 @@ public class CarePackage : MonoBehaviour
         {
             return spriteMapLabels[name];
         }
+
         return null;
     }
 

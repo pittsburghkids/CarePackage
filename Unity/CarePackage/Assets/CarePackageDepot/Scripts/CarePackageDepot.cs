@@ -147,15 +147,15 @@ public class CarePackageDepot : MonoBehaviour
 
                 // Set items and destination of not provided.
 
-                if (itemNames == null)
-                {
-                    itemNames = CarePackage.Instance.GetRandomItemNameList(8);
-                }
+                // if (itemNames == null)
+                // {
+                //     itemNames = CarePackage.Instance.GetRandomItemNameList(8);
+                // }
 
-                if (destinationName == null)
-                {
-                    destinationName = CarePackage.Instance.GetRandomDestinationName();
-                }
+                // if (destinationName == null)
+                // {
+                //     destinationName = CarePackage.Instance.GetRandomDestinationName();
+                // }
 
                 // Clear the item and destination maps for this box.
                 CarePackage.Instance.ResetBox(carePackageData.boxName);
@@ -235,14 +235,9 @@ public class CarePackageDepot : MonoBehaviour
     public void SetDestinationSprite(string destinationName)
     {
         Debug.Log("SetDestinationSprite: " + destinationName);
-
         if (destinationName != null)
         {
             destinationSpriteRenderer.sprite = CarePackage.Instance.GetSpriteForDestinationName(destinationName);
-        }
-        else
-        {
-            destinationSpriteRenderer.sprite = CarePackage.Instance.GetRandomDestinationSprite();
         }
     }
 
