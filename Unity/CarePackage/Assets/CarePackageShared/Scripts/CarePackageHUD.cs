@@ -5,26 +5,31 @@ using TMPro;
 
 public class CarePackageHUD : MonoBehaviour
 {
-    public GameObject hud;
-    public TMP_Text fpsText;
 
     private int samples = 30;
     private int sampleCount;
     private float sampleTotal;
 
+    private float fps;
+    private bool hudActive = true;
+
+    Matrix4x4 matrix;
+    Rect windowRect = new Rect(20, 20, 120, 50);
+
     void Start()
     {
-        hud.SetActive(false);
+        hudActive = false;
+        matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(2, 2, 1.0f));
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.H))
         {
-            hud.SetActive(!hud.activeSelf);
+            hudActive = !hudActive;
         }
 
-        if (hud.activeSelf)
+        if (hudActive)
         {
             sampleTotal += Time.deltaTime;
             sampleCount++;
@@ -32,8 +37,7 @@ public class CarePackageHUD : MonoBehaviour
             if (sampleCount == samples)
             {
                 float count = sampleCount / sampleTotal;
-                string label = "FPS: " + (Mathf.Round(count));
-                fpsText.text = label;
+                fps = Mathf.Round(count);
 
                 sampleTotal = 0;
                 sampleCount = 0;
@@ -42,5 +46,18 @@ public class CarePackageHUD : MonoBehaviour
         }
     }
 
+    void OnGUI()
+    {
+        if (hudActive)
+        {
+            GUI.matrix = matrix;
+            windowRect = GUILayout.Window(0, windowRect, DrawWindow, "HUD");
+        }
+    }
+
+    void DrawWindow(int windowID)
+    {
+        GUILayout.Label("FPS: " + fps);
+    }
 
 }

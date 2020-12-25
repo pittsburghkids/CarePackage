@@ -497,15 +497,6 @@ public class CarePackage : MonoBehaviour
         return null;
     }
 
-    // public Sprite GetSpriteForIconName(string name)
-    // {
-    //     if (spriteMapIcons.ContainsKey(name))
-    //     {
-    //         return spriteMapIcons[name];
-    //     }
-    //     return null;
-    // }
-
     // Get sprite image for destination name.
     public Sprite GetSpriteForDestinationName(string name)
     {

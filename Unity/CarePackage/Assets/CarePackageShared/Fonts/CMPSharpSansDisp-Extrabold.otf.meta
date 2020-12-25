@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: dd4e14d430fb1c242861d1f4194f5718
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - CMP Sharp Sans Display
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 5d54b01e88fdc5b459f65563d7cf20c7, type: 3}
+  - {fileID: 12800000, guid: d3f51e5e8a804c64bb943ab75b3cfa8c, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -5,8 +5,11 @@ using UnityEngine.UI;
 
 public class ScannerTriggerHandler : MonoBehaviour, ITriggerHandler
 {
-   [SerializeField] GameObject itemLayout = default;
-   [SerializeField] GameObject errorDisplay = default;
+    [SerializeField] GameObject itemLayout = default;
+    [SerializeField] GameObject errorDisplay = default;
+    [SerializeField] Sprite defaultItemSprite = default;
+
+    private Coroutine showScanRoutine = null;
 
     public void Start()
     {
@@ -16,6 +19,9 @@ public class ScannerTriggerHandler : MonoBehaviour, ITriggerHandler
     public void OnTriggerEnter(Collider collider)
     {
         Box box = collider.gameObject.GetComponent<Box>();
+
+        itemLayout.SetActive(false);
+        errorDisplay.SetActive(false);
 
         // Clear old sprites.
         for (int i = 0; i < itemLayout.transform.childCount; i++)
@@ -34,6 +40,8 @@ public class ScannerTriggerHandler : MonoBehaviour, ITriggerHandler
                     string itemName = box.carePackageDelivery.itemNames[i];
                     Sprite sprite = CarePackage.Instance.GetSpriteForItemName(itemName);
 
+                    if (sprite == null) sprite = defaultItemSprite;
+
                     Transform itemTransform = itemLayout.transform.GetChild(i);
                     Image itemImage = itemTransform.GetComponent<Image>();
                     itemImage.sprite = sprite;
@@ -43,16 +51,28 @@ public class ScannerTriggerHandler : MonoBehaviour, ITriggerHandler
 
             Debug.Log("ScannerTriggerHandler: Scan box with items.");
             itemLayout.SetActive(true);
-        } else {
+        }
+        else
+        {
             Debug.Log("ScannerTriggerHandler: Scan box with no items.");
             errorDisplay.SetActive(true);
         }
+
+        if (showScanRoutine != null) StopCoroutine(showScanRoutine);
+        showScanRoutine = StartCoroutine(ShowScanRoutine());
     }
 
-    // TODO(SJG): Instead of doing this on exit, set a timer that resets when a new box enters.
-    public void OnTriggerExit(Collider collider)
+    private IEnumerator ShowScanRoutine()
     {
+        yield return new WaitForSeconds(5);
+
         itemLayout.SetActive(false);
         errorDisplay.SetActive(false);
+
+        showScanRoutine = null;
+    }
+
+    public void OnTriggerExit(Collider collider)
+    {
     }
 }
