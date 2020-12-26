@@ -29,9 +29,6 @@ public class CarePackageLoader : MonoBehaviour
     private string loaderBoxBoardName = "LoaderBoxA";
     private string loaderAddressBoardName = "LoaderAddressA";
 
-    // Only show the item instructions after the first address prompt.
-    private bool showItemAfterAddress = true;
-
     // Track the address label so we can delete it when a new one comes.
     Coroutine labelRoutine;
     private GameObject labelInstance;
@@ -138,19 +135,21 @@ public class CarePackageLoader : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collider)
     {
-        carePackage.StoreItemInBox(currentBox, collider.gameObject.name);
-
-        // Broadcast data.
-
-        CarePackageData carePackageData = new CarePackageData
+        if (currentBox != null)
         {
-            type = "loader.insert",
-            itemName = collider.gameObject.name,
-            boxName = currentBox
-        };
+            carePackage.StoreItemInBox(currentBox, collider.gameObject.name);
 
-        carePackage.WebSocketSend(carePackageData);
+            // Broadcast data.
 
+            CarePackageData carePackageData = new CarePackageData
+            {
+                type = "loader.insert",
+                itemName = collider.gameObject.name,
+                boxName = currentBox
+            };
+
+            carePackage.WebSocketSend(carePackageData);
+        }
     }
 
     public void ClearDestination()
@@ -158,10 +157,93 @@ public class CarePackageLoader : MonoBehaviour
 
     }
 
+    // New box inserted into slot.
+    public void InsertBox(string boxName)
+    {
+        if (boxName != null)
+        {
+            if (currentBox != boxName)
+            {
+                insertBox.SetActive(false);
+                chooseAddress.SetActive(true);
+                insertItem.SetActive(false);
+
+                Debug.Log("InsertBox: " + boxName);
+                currentBox = boxName;
+
+                bool boxPresent = true;
+                doorAnimator.SetBool("Open", boxPresent);
+            }
+        }
+    }
+
+    // Box removed from slot.
+    public void RemoveBox(string boxName)
+    {
+
+        insertBox.SetActive(true);
+        insertItem.SetActive(false);
+        chooseAddress.SetActive(false);
+
+        // Clear destination.
+        if (labelRoutine != null)
+        {
+            StopCoroutine(labelRoutine);
+            labelRoutine = null;
+
+            if (labelInstance != null)
+            {
+                Destroy(labelInstance);
+            }
+        }
+
+        //
+
+        bool boxPresent = false;
+        doorAnimator.SetBool("Open", boxPresent);
+
+        Debug.Log("Box removed");
+        currentBox = null;
+    }
+
+    // New item inserted into slot.
+    public void InsertItem(string itemName)
+    {
+
+        if (currentBox != null)
+        {
+            // Handle instructions.
+
+            insertItem.SetActive(true);
+            chooseAddress.SetActive(false);
+        }
+
+        if (itemName != null)
+        {
+            GameObject itemInstance = Instantiate(itemPrefab, rootTransform);
+
+            Sprite itemSprite = carePackage.GetSpriteForItemName(itemName);
+            SpriteRenderer spriteRenderer = itemInstance.GetComponent<SpriteRenderer>();
+
+            if (itemSprite != null)
+            {
+                spriteRenderer.sprite = itemSprite;
+            }
+
+            itemInstance.name = itemName;
+        }
+
+    }
+
     public void SetDestination(string destinationName)
     {
         if (currentBox != null && destinationName != null)
         {
+            // Handle instructions.
+
+            insertBox.SetActive(false);
+            chooseAddress.SetActive(true);
+            insertItem.SetActive(false);
 
             // Clear destination.
             if (labelRoutine != null)
@@ -189,91 +271,12 @@ public class CarePackageLoader : MonoBehaviour
 
             carePackage.WebSocketSend(carePackageData);
 
-            // Handle instructions.
-
-            insertBox.SetActive(false);
-            chooseAddress.SetActive(false);
-            insertItem.SetActive(false);
-
         }
-    }
-
-    // New box inserted into slot.
-    public void InsertBox(string boxName)
-    {
-        if (boxName != null)
-        {
-            if (currentBox != boxName)
-            {
-                Debug.Log("InsertBox: " + boxName);
-                currentBox = boxName;
-
-                bool boxPresent = true;
-                doorAnimator.SetBool("Open", boxPresent);
-
-                insertBox.SetActive(false);
-                chooseAddress.SetActive(true);
-                insertItem.SetActive(false);
-
-                showItemAfterAddress = true;
-            }
-        }
-    }
-
-    // Box removed from slot.
-    public void RemoveBox(string boxName)
-    {
-        // Clear destination.
-        if (labelRoutine != null)
-        {
-            StopCoroutine(labelRoutine);
-            labelRoutine = null;
-
-            if (labelInstance != null)
-            {
-                Destroy(labelInstance);
-            }
-        }
-
-        //
-
-        bool boxPresent = false;
-        doorAnimator.SetBool("Open", boxPresent);
-
-        insertBox.SetActive(true);
-        insertItem.SetActive(false);
-        chooseAddress.SetActive(false);
-
-        Debug.Log("Box removed");
-        currentBox = null;
-    }
-
-    // New item inserted into slot.
-    public void InsertItem(string itemName)
-    {
-        insertItem.SetActive(false);
-        chooseAddress.SetActive(false);
-
-        if (itemName != null)
-        {
-            GameObject itemInstance = Instantiate(itemPrefab, rootTransform);
-
-            Sprite itemSprite = carePackage.GetSpriteForItemName(itemName);
-            SpriteRenderer spriteRenderer = itemInstance.GetComponent<SpriteRenderer>();
-
-            if (itemSprite != null)
-            {
-                spriteRenderer.sprite = itemSprite;
-            }
-
-            itemInstance.name = itemName;
-        }
-
-        showItemAfterAddress = false;
     }
 
     IEnumerator ShowDestinationRoutine(string destinationName)
     {
+
         Debug.Log("ShowDestinationRoutine: " + destinationName);
 
         labelInstance = Instantiate(labelPrefab, rootTransform);
@@ -293,9 +296,9 @@ public class CarePackageLoader : MonoBehaviour
             Destroy(labelInstance);
         }
 
-        if (showItemAfterAddress)
-        {
-            insertItem.SetActive(true);
-        }
+
+        insertItem.SetActive(true);
+        chooseAddress.SetActive(false);
+
     }
 }
