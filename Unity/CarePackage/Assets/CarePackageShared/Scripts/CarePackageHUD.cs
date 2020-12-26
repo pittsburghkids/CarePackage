@@ -11,23 +11,58 @@ public class CarePackageHUD : MonoBehaviour
     private float sampleTotal;
 
     private float fps;
-    private bool hudActive = true;
+    private bool hudActive = false;
 
     Matrix4x4 matrix;
     Rect windowRect = new Rect(20, 20, 120, 50);
 
     void Start()
     {
-        hudActive = false;
+
+#if UNITY_EDITOR
+        hudActive = true;
+#endif
+
         matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(2, 2, 1.0f));
     }
 
     void Update()
     {
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+
         if (Input.GetKeyDown(KeyCode.H))
         {
             hudActive = !hudActive;
         }
+
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"loader.address\",\"destinationName\":\"House\",\"boxName\":\"BoxA\"}");
+        }
+
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"loader.insert\",\"itemName\":\"Basketball\",\"boxName\":\"BoxA\"}");
+            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"loader.insert\",\"itemName\":\"FourLeafClover\",\"boxName\":\"BoxA\"}");
+            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"loader.insert\",\"itemName\":\"HeartDecoration\",\"boxName\":\"BoxA\"}");
+            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"loader.insert\",\"itemName\":\"Kite\",\"boxName\":\"BoxA\"}");
+        }
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"DepotBoxB\",\"boxName\":\"BoxA\"}");
+        }
+
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"DepotBoxA\",\"boxName\":\"BoxA\"}");
+        }
+
+        //
 
         if (hudActive)
         {
@@ -42,7 +77,6 @@ public class CarePackageHUD : MonoBehaviour
                 sampleTotal = 0;
                 sampleCount = 0;
             }
-
         }
     }
 
@@ -58,6 +92,28 @@ public class CarePackageHUD : MonoBehaviour
     void DrawWindow(int windowID)
     {
         GUILayout.Label("FPS: " + fps);
-    }
 
+        if (GUILayout.Button("Loader Add Box"))
+        {
+            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"LoaderBoxA\",\"boxName\":\"BoxA\"}");
+            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"LoaderBoxB\",\"boxName\":\"BoxB\"}");
+        }
+
+        if (GUILayout.Button("Loader Remove Box"))
+        {
+            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"tag.removed\",\"boardName\":\"LoaderBoxA\",\"boxName\":\"BoxA\"}");
+            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"tag.removed\",\"boardName\":\"LoaderBoxB\",\"boxName\":\"BoxB\"}");
+        }
+
+        if (GUILayout.Button("Loader Insert Item"))
+        {
+            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"LoaderItemA\",\"itemName\":\"Basketball\"}");
+        }
+
+        if (GUILayout.Button("Loader Address Wheel"))
+        {
+            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"encoder.change\",\"boardName\":\"LoaderAddressA\",\"destinationName\":\"House\"}");
+            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"encoder.change\",\"boardName\":\"LoaderAddressB\",\"destinationName\":\"House\"}");
+        }
+    }
 }

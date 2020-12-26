@@ -102,6 +102,7 @@ public class CarePackage : MonoBehaviour
             {
                 GameObject instanceGameObject = new GameObject("CarePackage");
                 instance = instanceGameObject.AddComponent<CarePackage>();
+                instanceGameObject.AddComponent<CarePackageHUD>();
                 DontDestroyOnLoad(instanceGameObject);
             }
 
@@ -121,62 +122,6 @@ public class CarePackage : MonoBehaviour
         // Connect to websocket.
         webSocketBridge = new WebSocketBridge("ws://localhost:8080");
         webSocketBridge.OnReceived += OnWebSocketReceived;
-    }
-
-    void Update()
-    {
-        // Keyboard shortcuts for debugging.
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Application.Quit();
-        }
-
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            OnWebSocketReceived("{\"type\":\"loader.address\",\"destinationName\":\"House\",\"boxName\":\"BoxA\"}");
-        }
-
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            OnWebSocketReceived("{\"type\":\"encoder.change\",\"boardName\":\"LoaderAddressA\",\"destinationName\":\"House\"}");
-            OnWebSocketReceived("{\"type\":\"encoder.change\",\"boardName\":\"LoaderAddressB\",\"destinationName\":\"House\"}");
-        }
-
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"LoaderItemA\",\"itemName\":\"Basketball\"}");
-        }
-
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            OnWebSocketReceived("{\"type\":\"loader.insert\",\"itemName\":\"Basketball\",\"boxName\":\"BoxA\"}");
-            OnWebSocketReceived("{\"type\":\"loader.insert\",\"itemName\":\"FourLeafClover\",\"boxName\":\"BoxA\"}");
-            OnWebSocketReceived("{\"type\":\"loader.insert\",\"itemName\":\"HeartDecoration\",\"boxName\":\"BoxA\"}");
-            OnWebSocketReceived("{\"type\":\"loader.insert\",\"itemName\":\"Kite\",\"boxName\":\"BoxA\"}");
-        }
-
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"LoaderBoxA\",\"boxName\":\"BoxA\"}");
-            OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"LoaderBoxB\",\"boxName\":\"BoxB\"}");
-        }
-
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            OnWebSocketReceived("{\"type\":\"tag.removed\",\"boardName\":\"LoaderBoxA\",\"boxName\":\"BoxA\"}");
-            OnWebSocketReceived("{\"type\":\"tag.removed\",\"boardName\":\"LoaderBoxB\",\"boxName\":\"BoxB\"}");
-        }
-
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"DepotBoxB\",\"boxName\":\"BoxA\"}");
-        }
-
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"DepotBoxA\",\"boxName\":\"BoxA\"}");
-        }
     }
 
     void OnDestroy()
@@ -246,7 +191,7 @@ public class CarePackage : MonoBehaviour
                     texture.anisoLevel = 5;
 
                     // Create and store sprite.
-                    Sprite itemSprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(.5f, .5f), 8196);
+                    Sprite itemSprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(.5f, .5f), 4096);
                     spriteMapItems.Add(carePackageItem.name, itemSprite);
                 }
             }
@@ -366,7 +311,7 @@ public class CarePackage : MonoBehaviour
         webSocketBridge.Send(carePackageJSON);
     }
 
-    private void OnWebSocketReceived(string message)
+    public void OnWebSocketReceived(string message)
     {
         Debug.Log(message);
 
@@ -406,12 +351,15 @@ public class CarePackage : MonoBehaviour
     {
         Debug.LogFormat("Storing {0} in {1}", item, boxName);
 
-        if (!storageMap.ContainsKey(boxName))
+        if (boxName != null)
         {
-            storageMap.Add(boxName, new List<string>());
-        }
+            if (!storageMap.ContainsKey(boxName))
+            {
+                storageMap.Add(boxName, new List<string>());
+            }
 
-        storageMap[boxName].Add(item);
+            storageMap[boxName].Add(item);
+        }
     }
 
     // Return a list of items stored in a box.
