@@ -4,10 +4,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-
 public class CarePackageLoader : MonoBehaviour
 {
     private const float destinationDisplayTime = 1.5f;
+    private const float maxItemsPerBox = 12;
+
+    private enum InstructionState
+    {
+        InsertBox,
+        ChooseAddress,
+        InsertItem,
+        BoxFull
+    }
 
     [SerializeField] Camera loaderCamera = default;
     [SerializeField] GameObject loaderSceneRoot = default;
@@ -16,6 +24,7 @@ public class CarePackageLoader : MonoBehaviour
     [SerializeField] GameObject insertItem = default;
     [SerializeField] GameObject chooseAddressA = default;
     [SerializeField] GameObject chooseAddressB = default;
+    [SerializeField] GameObject deliverPackage = default;
 
     [SerializeField] Transform rootTransform = default;
     [SerializeField] GameObject itemPrefab = default;
@@ -152,11 +161,6 @@ public class CarePackageLoader : MonoBehaviour
         }
     }
 
-    public void ClearDestination()
-    {
-
-    }
-
     // New box inserted into slot.
     public void InsertBox(string boxName)
     {
@@ -164,15 +168,16 @@ public class CarePackageLoader : MonoBehaviour
         {
             if (currentBox != boxName)
             {
-                insertBox.SetActive(false);
-                chooseAddress.SetActive(true);
-                insertItem.SetActive(false);
+                // TODO(SJG) Make sure this is actually a box.
 
                 Debug.Log("InsertBox: " + boxName);
                 currentBox = boxName;
 
                 bool boxPresent = true;
                 doorAnimator.SetBool("Open", boxPresent);
+
+                carePackage.ResetBox(currentBox);
+                ShowInstructions(InstructionState.ChooseAddress);
             }
         }
     }
@@ -180,10 +185,10 @@ public class CarePackageLoader : MonoBehaviour
     // Box removed from slot.
     public void RemoveBox(string boxName)
     {
+        Debug.Log("Box removed");
+        currentBox = null;
 
-        insertBox.SetActive(true);
-        insertItem.SetActive(false);
-        chooseAddress.SetActive(false);
+        ShowInstructions(InstructionState.InsertBox);
 
         // Clear destination.
         if (labelRoutine != null)
@@ -201,9 +206,6 @@ public class CarePackageLoader : MonoBehaviour
 
         bool boxPresent = false;
         doorAnimator.SetBool("Open", boxPresent);
-
-        Debug.Log("Box removed");
-        currentBox = null;
     }
 
     // New item inserted into slot.
@@ -213,9 +215,7 @@ public class CarePackageLoader : MonoBehaviour
         if (currentBox != null)
         {
             // Handle instructions.
-
-            insertItem.SetActive(true);
-            chooseAddress.SetActive(false);
+            ShowInstructions(InstructionState.InsertItem);
         }
 
         if (itemName != null)
@@ -241,9 +241,7 @@ public class CarePackageLoader : MonoBehaviour
         {
             // Handle instructions.
 
-            insertBox.SetActive(false);
-            chooseAddress.SetActive(true);
-            insertItem.SetActive(false);
+            ShowInstructions(InstructionState.ChooseAddress);
 
             // Clear destination.
             if (labelRoutine != null)
@@ -297,8 +295,45 @@ public class CarePackageLoader : MonoBehaviour
         }
 
 
-        insertItem.SetActive(true);
+        ShowInstructions(InstructionState.InsertItem);
+    }
+
+    private void ShowInstructions(InstructionState state)
+    {
+        insertBox.SetActive(false);
         chooseAddress.SetActive(false);
+        insertItem.SetActive(false);
+        deliverPackage.SetActive(false);
+
+        if (currentBox != null)
+        {
+            List<string> boxItems = carePackage.GetItemsInBox(currentBox);
+            if (boxItems != null && boxItems.Count > maxItemsPerBox)
+            {
+                deliverPackage.SetActive(true);
+                return;
+            }
+        }
+
+        switch (state)
+        {
+            case InstructionState.InsertBox:
+                {
+                    insertBox.SetActive(true);
+                    break;
+                }
+            case InstructionState.ChooseAddress:
+                {
+                    chooseAddress.SetActive(true);
+                    break;
+                }
+            case InstructionState.InsertItem:
+                {
+                    insertItem.SetActive(true);
+                    break;
+                }
+        }
+
 
     }
 }
