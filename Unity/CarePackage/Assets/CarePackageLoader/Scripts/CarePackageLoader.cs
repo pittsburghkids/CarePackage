@@ -18,18 +18,20 @@ public class CarePackageLoader : MonoBehaviour
     }
 
     [SerializeField] Camera loaderCamera = default;
-    [SerializeField] GameObject loaderSceneRoot = default;
+    [SerializeField] Transform rootTransform = default;
 
+    [SerializeField] Transform itemContainer;
+
+    [SerializeField] GameObject itemPrefab = default;
+    [SerializeField] GameObject labelPrefab = default;
+    [SerializeField] Animator loaderAnimator = default;
+
+    [Header("Instructions")]
     [SerializeField] GameObject insertBox = default;
     [SerializeField] GameObject insertItem = default;
     [SerializeField] GameObject chooseAddressA = default;
     [SerializeField] GameObject chooseAddressB = default;
     [SerializeField] GameObject deliverPackage = default;
-
-    [SerializeField] Transform rootTransform = default;
-    [SerializeField] GameObject itemPrefab = default;
-    [SerializeField] GameObject labelPrefab = default;
-    [SerializeField] Animator doorAnimator = default;
 
     private CarePackage carePackage;
     GameObject chooseAddress;
@@ -60,7 +62,7 @@ public class CarePackageLoader : MonoBehaviour
         // See if this is the first or second instance of CarePackageLoader.
         if (carePackage.loaderALoaded == false)
         {
-            loaderSceneRoot.transform.position = Vector3.left;
+            rootTransform.position = Vector3.left;
 
             if (!multiDisplay)
             {
@@ -81,7 +83,7 @@ public class CarePackageLoader : MonoBehaviour
         }
         else if (carePackage.loaderBLoaded == false)
         {
-            loaderSceneRoot.transform.position = Vector3.right;
+            rootTransform.position = Vector3.right;
 
             if (!multiDisplay)
             {
@@ -142,7 +144,8 @@ public class CarePackageLoader : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter2D(Collider2D collider)
+    // Called from LoaderTriggerHandler on item collision.
+    public void StoreItemFromTrigger(Collider collider)
     {
         if (currentBox != null)
         {
@@ -158,6 +161,10 @@ public class CarePackageLoader : MonoBehaviour
             };
 
             carePackage.WebSocketSend(carePackageData);
+
+            // Destroy object.
+
+            Destroy(collider.gameObject);
         }
     }
 
@@ -174,7 +181,7 @@ public class CarePackageLoader : MonoBehaviour
                 currentBox = boxName;
 
                 bool boxPresent = true;
-                doorAnimator.SetBool("Open", boxPresent);
+                loaderAnimator.SetBool("Opened", boxPresent);
 
                 carePackage.ResetBox(currentBox);
                 ShowInstructions(InstructionState.ChooseAddress);
@@ -205,7 +212,7 @@ public class CarePackageLoader : MonoBehaviour
         //
 
         bool boxPresent = false;
-        doorAnimator.SetBool("Open", boxPresent);
+        loaderAnimator.SetBool("Opened", boxPresent);
     }
 
     // New item inserted into slot.
@@ -220,7 +227,7 @@ public class CarePackageLoader : MonoBehaviour
 
         if (itemName != null)
         {
-            GameObject itemInstance = Instantiate(itemPrefab, rootTransform);
+            GameObject itemInstance = Instantiate(itemPrefab, itemContainer);
 
             Sprite itemSprite = carePackage.GetSpriteForItemName(itemName);
             SpriteRenderer spriteRenderer = itemInstance.GetComponent<SpriteRenderer>();

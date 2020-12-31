@@ -23,11 +23,8 @@ public class Item : MonoBehaviour
         transform.Rotate(0, 0, rotationRate);
     }
 
-    void OnTriggerEnter2D(Collider2D collider)
+    void OnTriggerEnter(Collider collider)
     {
-        if (collider.gameObject.name.StartsWith("Flap"))
-        {
-            velocity = new Vector3(Random.Range(-.5f, .5f), .5f, 0);
-        }
+        velocity = new Vector3(Random.Range(-.5f, .5f), .5f, 0);
     }
 }
