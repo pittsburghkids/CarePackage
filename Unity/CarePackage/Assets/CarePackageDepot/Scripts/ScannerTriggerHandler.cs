@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class ScannerTriggerHandler : MonoBehaviour, ITriggerHandler
 {
+    const float DisplayTimeout = 2;
+
     [SerializeField] GameObject itemLayout = default;
     [SerializeField] GameObject errorDisplay = default;
     [SerializeField] Sprite defaultItemSprite = default;
@@ -64,7 +66,7 @@ public class ScannerTriggerHandler : MonoBehaviour, ITriggerHandler
 
     private IEnumerator ShowScanRoutine()
     {
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(DisplayTimeout);
 
         itemLayout.SetActive(false);
         errorDisplay.SetActive(false);

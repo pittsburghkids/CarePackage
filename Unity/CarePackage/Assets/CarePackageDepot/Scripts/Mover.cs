@@ -34,6 +34,9 @@ public class Mover : MonoBehaviour
         // This will trigger animations for the door and lift.
         CarePackageDepot.Instance.LiftUp();
         CarePackageDepot.Instance.OpenDoor(gameObject);
+
+
+        // TODO(SJG): Pass the box to OpenDoor and set destination from there.
     }
 
     // This is called by an event in the animation clip "MoverLift".

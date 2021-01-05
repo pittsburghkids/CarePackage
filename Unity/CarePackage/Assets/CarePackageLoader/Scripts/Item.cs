@@ -6,7 +6,7 @@ public class Item : MonoBehaviour
 {
     Vector3 position = Vector3.up * .24f;
     float rotationRate;
-    Vector3 velocity = new Vector3(0, -.5f, 0);
+    Vector3 velocity = new Vector3(0, -.3f, 0);
 
     void Start()
     {
