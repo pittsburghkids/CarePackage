@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
-// TODO(SJG) Store sprites instead of names for destintion and items?
 [System.Serializable]
 public class CarePackageDelivery
 {
