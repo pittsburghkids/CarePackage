@@ -6,15 +6,15 @@ using UnityEngine.SceneManagement;
 
 public class CarePackageLoader : MonoBehaviour
 {
-    private const float destinationDisplayTime = 1.5f;
-    private const float maxItemsPerBox = 12;
+    private const float DestinationDisplayTime = 1.5f;
+    private const float MaxItemsPerBox = 12;
 
     private enum InstructionState
     {
         InsertBox,
         ChooseAddress,
         InsertItem,
-        BoxFull
+        DeliverPackage
     }
 
     [SerializeField] Camera loaderCamera = default;
@@ -34,8 +34,8 @@ public class CarePackageLoader : MonoBehaviour
     [SerializeField] GameObject deliverPackage = default;
 
     private CarePackage carePackage;
-    GameObject chooseAddress;
 
+    private GameObject chooseAddress;
     private string loaderItemBoardName = "LoaderItemA";
     private string loaderBoxBoardName = "LoaderBoxA";
     private string loaderAddressBoardName = "LoaderAddressA";
@@ -165,6 +165,15 @@ public class CarePackageLoader : MonoBehaviour
             // Destroy object.
 
             Destroy(collider.gameObject);
+
+            // Check if box is full.
+
+            List<string> boxItems = carePackage.GetItemsInBox(currentBox);
+            if (boxItems != null && boxItems.Count > MaxItemsPerBox)
+            {
+                ShowInstructions(InstructionState.DeliverPackage);
+                loaderAnimator.SetBool("Opened", false);
+            }
         }
     }
 
@@ -284,7 +293,7 @@ public class CarePackageLoader : MonoBehaviour
 
         Debug.Log("ShowDestinationRoutine: " + destinationName);
 
-        labelInstance = Instantiate(labelPrefab, rootTransform);
+        labelInstance = Instantiate(labelPrefab, chooseAddress.transform);
 
         Sprite labelSprite = carePackage.GetSpriteForLabelName(destinationName);
         SpriteRenderer spriteRenderer = labelInstance.GetComponent<SpriteRenderer>();
@@ -294,7 +303,7 @@ public class CarePackageLoader : MonoBehaviour
             spriteRenderer.sprite = labelSprite;
         }
 
-        yield return new WaitForSeconds(destinationDisplayTime);
+        yield return new WaitForSeconds(DestinationDisplayTime);
 
         if (labelInstance != null)
         {
@@ -315,7 +324,7 @@ public class CarePackageLoader : MonoBehaviour
         if (currentBox != null)
         {
             List<string> boxItems = carePackage.GetItemsInBox(currentBox);
-            if (boxItems != null && boxItems.Count > maxItemsPerBox)
+            if (boxItems != null && boxItems.Count > MaxItemsPerBox && state != InstructionState.ChooseAddress)
             {
                 deliverPackage.SetActive(true);
                 return;
@@ -337,6 +346,11 @@ public class CarePackageLoader : MonoBehaviour
             case InstructionState.InsertItem:
                 {
                     insertItem.SetActive(true);
+                    break;
+                }
+            case InstructionState.DeliverPackage:
+                {
+                    deliverPackage.SetActive(true);
                     break;
                 }
         }

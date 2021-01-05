@@ -39,29 +39,6 @@ public class CarePackageHUD : MonoBehaviour
             hudActive = !hudActive;
         }
 
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"loader.address\",\"destinationName\":\"House\",\"boxName\":\"BoxA\"}");
-        }
-
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"loader.insert\",\"itemName\":\"Basketball\",\"boxName\":\"BoxA\"}");
-            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"loader.insert\",\"itemName\":\"FourLeafClover\",\"boxName\":\"BoxA\"}");
-            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"loader.insert\",\"itemName\":\"HeartDecoration\",\"boxName\":\"BoxA\"}");
-            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"loader.insert\",\"itemName\":\"Kite\",\"boxName\":\"BoxA\"}");
-        }
-
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"DepotBoxB\",\"boxName\":\"BoxA\"}");
-        }
-
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"DepotBoxA\",\"boxName\":\"BoxA\"}");
-        }
-
         //
 
         if (hudActive)
@@ -115,5 +92,30 @@ public class CarePackageHUD : MonoBehaviour
             CarePackage.Instance.OnWebSocketReceived("{\"type\":\"encoder.change\",\"boardName\":\"LoaderAddressA\",\"destinationName\":\"House\"}");
             CarePackage.Instance.OnWebSocketReceived("{\"type\":\"encoder.change\",\"boardName\":\"LoaderAddressB\",\"destinationName\":\"House\"}");
         }
+
+        if (GUILayout.Button("Depot Set Next Address"))
+        {
+            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"loader.address\",\"destinationName\":\"House\",\"boxName\":\"BoxA\"}");
+        }
+
+        if (GUILayout.Button("Depot Set Next Items"))
+        {
+            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"loader.insert\",\"itemName\":\"Basketball\",\"boxName\":\"BoxA\"}");
+            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"loader.insert\",\"itemName\":\"FourLeafClover\",\"boxName\":\"BoxA\"}");
+            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"loader.insert\",\"itemName\":\"HeartDecoration\",\"boxName\":\"BoxA\"}");
+            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"loader.insert\",\"itemName\":\"Kite\",\"boxName\":\"BoxA\"}");
+        }
+
+        if (GUILayout.Button("Depot Insert Top Box"))
+        {
+            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"DepotBoxB\",\"boxName\":\"BoxA\"}");
+        }
+
+        if (GUILayout.Button("Depot Insert Side Box"))
+        {
+            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"DepotBoxA\",\"boxName\":\"BoxA\"}");
+        }
+
+
     }
 }
