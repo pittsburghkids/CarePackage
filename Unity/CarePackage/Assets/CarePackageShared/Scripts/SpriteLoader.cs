@@ -29,7 +29,7 @@ public class SpriteLoader : MonoBehaviour
             {
                 yield return unityWebRequest.SendWebRequest();
 
-                if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
+                if (unityWebRequest.result == UnityWebRequest.Result.ConnectionError || unityWebRequest.result == UnityWebRequest.Result.ProtocolError)
                 {
                     Debug.Log("No sprite found for: " + gameObject.name);
                 }

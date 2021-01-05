@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Box : MonoBehaviour
 {
-    private const float emitDuration = 3f;
+    private const float emitDuration = 2.5f;
     private const float delayDuration = .5f;
 
     [SerializeField] GameObject itemPrefab = default;

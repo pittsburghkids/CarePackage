@@ -138,7 +138,7 @@ public class CarePackage : MonoBehaviour
             // Request and wait for the desired page.
             yield return webRequest.SendWebRequest();
 
-            if (webRequest.isNetworkError)
+            if (webRequest.result == UnityWebRequest.Result.ConnectionError)
             {
                 Debug.Log("UnityWebRequest Error: " + webRequest.error);
             }
@@ -174,7 +174,7 @@ public class CarePackage : MonoBehaviour
             {
                 yield return unityWebRequest.SendWebRequest();
 
-                if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
+                if (unityWebRequest.result == UnityWebRequest.Result.ConnectionError || unityWebRequest.result == UnityWebRequest.Result.ProtocolError)
                 {
                     Debug.Log(unityWebRequest.error);
                 }
@@ -209,7 +209,7 @@ public class CarePackage : MonoBehaviour
         //     {
         //         yield return unityWebRequest.SendWebRequest();
 
-        //         if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
+        //         if (unityWebRequest.result == UnityWebRequest.Result.ConnectionError || unityWebRequest.result == UnityWebRequest.Result.ProtocolError)
         //         {
         //             Debug.Log(unityWebRequest.error);
         //         }
@@ -244,7 +244,7 @@ public class CarePackage : MonoBehaviour
             {
                 yield return unityWebRequest.SendWebRequest();
 
-                if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
+                if (unityWebRequest.result == UnityWebRequest.Result.ConnectionError || unityWebRequest.result == UnityWebRequest.Result.ProtocolError)
                 {
                     Debug.Log(unityWebRequest.error);
                 }
@@ -279,7 +279,7 @@ public class CarePackage : MonoBehaviour
             {
                 yield return unityWebRequest.SendWebRequest();
 
-                if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
+                if (unityWebRequest.result == UnityWebRequest.Result.ConnectionError || unityWebRequest.result == UnityWebRequest.Result.ProtocolError)
                 {
                     Debug.Log(unityWebRequest.error);
                 }
