@@ -1,10 +1,10 @@
 ## Depot
 
-* Can we add thank you when the door closes?
 * Better box emit.
 
 ### Depot Done
 
+* Can we add thank you when the door closes?
 * Can we add the care package logo to the door?
 * No Address
     * Question Mark Stamp
@@ -16,6 +16,12 @@
 * Can the items stay on the scanner screen until the door closes? (Extended time.)
 * Can you slow down the opening of the box?
 * Bigger/clearer items coming out of the box.
+
+
+## Loader
+
+* Keep prompting with address until someone picks one.
+* Reset items and address when inserting a new box?
 
 ### Loader Done
 
