@@ -45,6 +45,7 @@ public class CarePackageLoader : MonoBehaviour
     private GameObject labelInstance;
 
     string currentBox = null;
+    string currentDestination = null;
 
     void Start()
     {
@@ -203,6 +204,7 @@ public class CarePackageLoader : MonoBehaviour
     {
         Debug.Log("Box removed");
         currentBox = null;
+        currentDestination = null;
 
         ShowInstructions(InstructionState.InsertBox);
 
@@ -228,7 +230,7 @@ public class CarePackageLoader : MonoBehaviour
     public void InsertItem(string itemName)
     {
 
-        if (currentBox != null)
+        if (currentBox != null && currentDestination != null)
         {
             // Handle instructions.
             ShowInstructions(InstructionState.InsertItem);
@@ -255,8 +257,9 @@ public class CarePackageLoader : MonoBehaviour
     {
         if (currentBox != null && destinationName != null)
         {
-            // Handle instructions.
+            currentDestination = destinationName;
 
+            // Handle instructions.        
             ShowInstructions(InstructionState.ChooseAddress);
 
             // Clear destination.
@@ -284,7 +287,6 @@ public class CarePackageLoader : MonoBehaviour
             };
 
             carePackage.WebSocketSend(carePackageData);
-
         }
     }
 
