@@ -25,6 +25,9 @@ public class Item : MonoBehaviour
 
     void OnTriggerEnter(Collider collider)
     {
-        velocity = new Vector3(Random.Range(-.5f, .5f), .5f, 0);
+        float horizontalVelocity = Random.Range(.5f, .75f);
+        if (Random.value > .5f) horizontalVelocity *= -1;
+
+        velocity = new Vector3(horizontalVelocity, .5f, 0);
     }
 }
