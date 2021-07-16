@@ -26,9 +26,11 @@ public class CarePackageDepot : MonoBehaviour
     [SerializeField] GameObject sideMoverPrefab = default;
     [SerializeField] GameObject topMoverPrefab = default;
     [SerializeField] SpriteRenderer destinationSpriteRenderer = default;
-    [SerializeField] BoxQueue boxQueue = default;
 
-    [Header("Enivronment")]
+    [SerializeField] BoxQueue liftBoxQueue = default;
+    [SerializeField] BoxQueue chuteBoxQueue = default;
+
+    [Header("Animation")]
     public AnimatorBridge doorAnimatorBridge = default;
     public AnimatorBridge liftAnimatorBridge = default;
     public AnimatorBridge grabberAnimatorBridge = default;
@@ -79,7 +81,7 @@ public class CarePackageDepot : MonoBehaviour
                 Destroy(doorCaller);
 
                 // Clear lift queue for next box.
-                boxQueue.ClearBoxes = true;
+                liftBoxQueue.ClearBoxes = true;
 
                 boxCount--;
             }
