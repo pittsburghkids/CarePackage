@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Mover : MonoBehaviour
 {
+    public AnimatorBridge animatorBridge;
+
     Box box;
 
     public int index = 0;
@@ -13,6 +15,7 @@ public class Mover : MonoBehaviour
     {
         this.box = box;
         box.mover = this;
+        box.Initialize();
 
         box.transform.parent = transform;
         box.transform.localPosition = Vector3.zero;

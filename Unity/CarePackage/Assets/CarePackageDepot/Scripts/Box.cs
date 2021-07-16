@@ -13,7 +13,8 @@ public class Box : MonoBehaviour
     [SerializeField] GameObject confetti = default;
     [SerializeField] GameObject decal = default;
 
-    [SerializeField] AudioClip[] clips = default;
+    [SerializeField] AudioClip boxHit = default;
+    [SerializeField] AudioClip[] chimes = default;
 
     public CarePackageDelivery carePackageDelivery;
     public Mover mover;
@@ -38,6 +39,16 @@ public class Box : MonoBehaviour
 
     public void Start() {
         audioSource = GetComponent<AudioSource>();
+    }
+
+    public void Initialize() {
+        mover.animatorBridge.OnAnimationBridgeEvent += (AnimationEvent animationEvent) =>
+        {
+            if (animationEvent.stringParameter == "MoverBoxHit")
+            {
+                audioSource.PlayOneShot(boxHit);
+            }
+        };        
     }
 
     // Called by the mover when its animation completes.
@@ -97,8 +108,8 @@ public class Box : MonoBehaviour
                     SpriteRenderer spriteRenderer = itemInstance.GetComponent<SpriteRenderer>();
                     spriteRenderer.sprite = itemSprite;
 
-                    int clipIndex = Random.Range(0, clips.Length);
-                    audioSource.PlayOneShot(clips[clipIndex]);
+                    int clipIndex = Random.Range(0, chimes.Length);
+                    audioSource.PlayOneShot(chimes[clipIndex]);
 
                     Debug.Log("Emitting: " + itemInstance.name);
 
