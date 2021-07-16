@@ -2,17 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class StampTriggerHandler : MonoBehaviour, ITriggerHandler
 {
     [SerializeField] Animator animator = default;
     [SerializeField] AnimatorBridge animationEventBridge = default;
 
     private Box currentBox;
+    private AudioSource audioSource;
 
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         animationEventBridge.OnAnimationBridgeEvent += (AnimationEvent animationEvent) =>
         {
+            audioSource.PlayOneShot(audioSource.clip);
             currentBox?.ShowDecal();
         };
     }

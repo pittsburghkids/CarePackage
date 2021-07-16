@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(AudioSource))]
 public class ScannerTriggerHandler : MonoBehaviour, ITriggerHandler
 {
     const float DisplayTimeout = 2;
@@ -11,10 +12,15 @@ public class ScannerTriggerHandler : MonoBehaviour, ITriggerHandler
     [SerializeField] GameObject errorDisplay = default;
     [SerializeField] Sprite defaultItemSprite = default;
 
-    private Coroutine showScanRoutine = null;
+    [SerializeField] AudioClip scanClip = default;
+    [SerializeField] AudioClip errorClip = default;
 
-    public void Start()
+    private Coroutine showScanRoutine = null;
+    private AudioSource audioSource;
+
+    void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         itemLayout.SetActive(false);
     }
 
@@ -52,11 +58,13 @@ public class ScannerTriggerHandler : MonoBehaviour, ITriggerHandler
             }
 
             Debug.Log("ScannerTriggerHandler: Scan box with items.");
+            audioSource.PlayOneShot(scanClip);
             itemLayout.SetActive(true);
         }
         else
         {
             Debug.Log("ScannerTriggerHandler: Scan box with no items.");
+            audioSource.PlayOneShot(errorClip);
             errorDisplay.SetActive(true);
         }
 
