@@ -28,7 +28,6 @@ public class CarePackageDepot : MonoBehaviour
     [SerializeField] SpriteRenderer destinationSpriteRenderer = default;
 
     [SerializeField] BoxQueue liftBoxQueue = default;
-    [SerializeField] BoxQueue chuteBoxQueue = default;
 
     [Header("Animation")]
     public AnimatorBridge doorAnimatorBridge = default;
