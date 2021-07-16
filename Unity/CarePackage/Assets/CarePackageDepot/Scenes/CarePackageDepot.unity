@@ -3806,7 +3806,6 @@ MonoBehaviour:
     type: 3}
   destinationSpriteRenderer: {fileID: 872780165}
   liftBoxQueue: {fileID: 1553233535}
-  chuteBoxQueue: {fileID: 1179314581}
   doorAnimatorBridge: {fileID: 518011512}
   liftAnimatorBridge: {fileID: 204042247}
   grabberAnimatorBridge: {fileID: 817283393}
