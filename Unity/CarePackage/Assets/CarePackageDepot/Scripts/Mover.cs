@@ -56,13 +56,15 @@ public class Mover : MonoBehaviour
         if (otherMover != null)
         {
             // Is the other mover in front or behind?
-            float dot = Vector3.Dot(transform.right, transform.position - otherMover.transform.position);
-            bool frontCollision = (dot < 0);
+            bool forwardCollision = ForwardCollision(otherMover);
+            bool downCollision = DownCollision(otherMover);
 
-            Debug.LogFormat("OnCollisionEnter: Mover: {0} OtherMover: {1} FrontCollision: {2}", index, otherMover.index, frontCollision);
+            Debug.LogFormat("OnCollisionEnter: Mover: {0} OtherMover: {1} ForwardCollision: {2} DownCollision: {3}",
+                index, otherMover.index, forwardCollision, downCollision);
 
-            if (frontCollision)
+            if (forwardCollision || downCollision)
             {
+                Debug.Log("Collision Pause: " + gameObject.name);
                 Pause();
             }
         }
@@ -75,17 +77,44 @@ public class Mover : MonoBehaviour
 
         if (otherMover != null)
         {
-            // Is the other mover in front or behind?
-            float dot = Vector3.Dot(transform.right, transform.position - otherMover.transform.position);
-            bool frontCollision = (dot < 0);
+            // Is the other mover in front or below?
+            bool forwardCollision = ForwardCollision(otherMover);
+            bool downCollision = DownCollision(otherMover);
 
-            Debug.LogFormat("OnCollisionExit: Mover: {0} OtherMover: {1} FrontCollision: {2}", index, otherMover.index, frontCollision);
+            Debug.LogFormat("OnCollisionExit: Mover: {0} OtherMover: {1} ForwardCollision: {2} DownCollision: {3}",
+                index, otherMover.index, forwardCollision, downCollision);
 
-            if (frontCollision && autoUnpause)
+            if ((forwardCollision || downCollision) && autoUnpause)
             {
                 Unpause();
             }
         }
+    }
+
+    private bool ForwardCollision(Mover otherMover)
+    {
+        Vector3 floorPosition = transform.position;
+        Vector3 otherFloorPosition = otherMover.transform.position;
+        floorPosition.y = otherFloorPosition.y = 0;
+
+        Vector3 collisionVector = (floorPosition - otherFloorPosition).normalized;
+
+        float dot = Vector3.Dot(-transform.right, collisionVector);
+        bool forwardCollision = (dot > .1f);
+
+        if (forwardCollision)
+        {
+            Debug.DrawRay(transform.position, -transform.right, Color.red, 5);
+            Debug.DrawRay(transform.position, collisionVector, Color.green, 5);
+        }
+
+        return forwardCollision;
+    }
+
+    private bool DownCollision(Mover otherMover)
+    {
+        bool downCollision = transform.position.y - otherMover.transform.position.y > .1f;
+        return downCollision;
     }
 
     public void Pause()
