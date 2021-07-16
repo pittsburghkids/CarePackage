@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class CarePackageHUD : MonoBehaviour
@@ -93,12 +94,12 @@ public class CarePackageHUD : MonoBehaviour
             CarePackage.Instance.OnWebSocketReceived("{\"type\":\"encoder.change\",\"boardName\":\"LoaderAddressB\",\"destinationName\":\"House\"}");
         }
 
-        if (GUILayout.Button("Depot Set Next Address"))
+        if (GUILayout.Button("Depot Set Next [A]ddress") || Input.GetKeyDown(KeyCode.A))
         {
             CarePackage.Instance.OnWebSocketReceived("{\"type\":\"loader.address\",\"destinationName\":\"House\",\"boxName\":\"BoxA\"}");
         }
 
-        if (GUILayout.Button("Depot Set Next Items"))
+        if (GUILayout.Button("Depot Set Next [I]tems") || Input.GetKeyDown(KeyCode.I))
         {
             CarePackage.Instance.OnWebSocketReceived("{\"type\":\"loader.insert\",\"itemName\":\"Basketball\",\"boxName\":\"BoxA\"}");
             CarePackage.Instance.OnWebSocketReceived("{\"type\":\"loader.insert\",\"itemName\":\"FourLeafClover\",\"boxName\":\"BoxA\"}");
@@ -106,16 +107,20 @@ public class CarePackageHUD : MonoBehaviour
             CarePackage.Instance.OnWebSocketReceived("{\"type\":\"loader.insert\",\"itemName\":\"Kite\",\"boxName\":\"BoxA\"}");
         }
 
-        if (GUILayout.Button("Depot Insert Top Box"))
+        if (GUILayout.Button("Depot Insert [T]op Box") || Input.GetKeyDown(KeyCode.T))
         {
             CarePackage.Instance.OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"DepotBoxB\",\"boxName\":\"BoxA\"}");
         }
 
-        if (GUILayout.Button("Depot Insert Side Box"))
+        if (GUILayout.Button("Depot Insert [S]ide Box") || Input.GetKeyDown(KeyCode.S))
         {
             CarePackage.Instance.OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"DepotBoxA\",\"boxName\":\"BoxA\"}");
         }
 
+        if (GUILayout.Button("[R]eload Scene") || Input.GetKeyDown(KeyCode.R))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
 
     }
 }
