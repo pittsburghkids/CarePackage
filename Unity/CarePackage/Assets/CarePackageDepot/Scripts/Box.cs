@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class Box : MonoBehaviour
 {
     private const float emitDuration = 2.5f;
@@ -12,8 +13,12 @@ public class Box : MonoBehaviour
     [SerializeField] GameObject confetti = default;
     [SerializeField] GameObject decal = default;
 
+    [SerializeField] AudioClip[] clips = default;
+
     public CarePackageDelivery carePackageDelivery;
     public Mover mover;
+
+    private AudioSource audioSource;
 
     public bool HasAddress
     {
@@ -29,6 +34,10 @@ public class Box : MonoBehaviour
         {
             return (carePackageDelivery.itemNames != null && carePackageDelivery.itemNames.Count > 0);
         }
+    }
+
+    public void Start() {
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Called by the mover when its animation completes.
@@ -87,6 +96,9 @@ public class Box : MonoBehaviour
                     Sprite itemSprite = CarePackage.Instance.GetSpriteForItemName(itemName);
                     SpriteRenderer spriteRenderer = itemInstance.GetComponent<SpriteRenderer>();
                     spriteRenderer.sprite = itemSprite;
+
+                    int clipIndex = Random.Range(0, clips.Length);
+                    audioSource.PlayOneShot(clips[clipIndex]);
 
                     Debug.Log("Emitting: " + itemInstance.name);
 
