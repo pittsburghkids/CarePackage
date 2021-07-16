@@ -15,6 +15,8 @@ public class BoxQueue : MonoBehaviour
         {
             Mover mover = moverQueue.Dequeue();
 
+            Debug.Log("Unpausing Mover: " + mover.gameObject.name);
+
             mover.Unpause();
             mover.autoUnpause = true;
 
@@ -28,6 +30,8 @@ public class BoxQueue : MonoBehaviour
         Mover mover = box.mover;
 
         mover.autoUnpause = false;
+
+        Debug.Log("Pausing Mover: " + mover.gameObject.name);
         mover.Pause();
 
         moverQueue.Enqueue(mover);
