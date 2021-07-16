@@ -47,6 +47,10 @@ public class CarePackageLoader : MonoBehaviour
     string currentBox = null;
     string currentDestination = null;
 
+    // Timeout handling to show instructions.
+    private float lastActionTime = 0;
+    private float lastActionTimeout = 7.5f;
+
     void Start()
     {
         carePackage = CarePackage.Instance;
@@ -107,12 +111,22 @@ public class CarePackageLoader : MonoBehaviour
         }
     }
 
+    private void Update() {
+        // Show loader instructions after timeout if we have a box and an address.
+        if (currentBox != null && currentDestination != null &&
+            Time.time - lastActionTime > lastActionTimeout ) {
+            lastActionTime = Time.time;
+            ShowInstructions(InstructionState.DeliverPackage);
+        }
+    }
+
     private void OnCarePackageData(CarePackageData carePackageData)
     {
         if (carePackageData.boardName == loaderAddressBoardName)
         {
             if (carePackageData.type == "encoder.change" && carePackageData.destinationName != null)
             {
+                lastActionTime = Time.time;
                 SetDestination(carePackageData.destinationName);
             }
         }
@@ -122,6 +136,7 @@ public class CarePackageLoader : MonoBehaviour
             // Item found.
             if (carePackageData.type == "tag.found" && carePackageData.itemName != null)
             {
+                lastActionTime = Time.time;
                 Debug.Log(carePackageData.itemName);
                 InsertItem(carePackageData.itemName);
             }
@@ -132,6 +147,7 @@ public class CarePackageLoader : MonoBehaviour
             // Box found.
             if (carePackageData.type == "tag.found" && carePackageData.boxName != null)
             {
+                lastActionTime = Time.time;
                 Debug.Log(carePackageData.boxName);
                 InsertBox(carePackageData.boxName);
             }
@@ -139,6 +155,7 @@ public class CarePackageLoader : MonoBehaviour
             // Box removed.
             if (carePackageData.type == "tag.removed" && carePackageData.boxName != null)
             {
+                lastActionTime = Time.time;
                 Debug.Log(carePackageData.boxName);
                 RemoveBox(carePackageData.boxName);
             }
@@ -164,11 +181,9 @@ public class CarePackageLoader : MonoBehaviour
             carePackage.WebSocketSend(carePackageData);
 
             // Destroy object.
-
             Destroy(collider.gameObject);
 
             // Check if box is full.
-
             List<string> boxItems = carePackage.GetItemsInBox(currentBox);
             if (boxItems != null && boxItems.Count > MaxItemsPerBox)
             {
