@@ -5138,7 +5138,8 @@ MonoBehaviour:
   itemSpawnPoint: {fileID: 813562947}
   confetti: {fileID: 1345463933}
   decal: {fileID: 6580306217271613814}
-  clips:
+  boxHit: {fileID: 8300000, guid: 2198736ab68544511ae453b4f30cddb6, type: 3}
+  chimes:
   - {fileID: 8300000, guid: a31decaeacae540c589265ab37748144, type: 3}
   - {fileID: 8300000, guid: 74d6355acc9084932b1693691629c21c, type: 3}
   - {fileID: 8300000, guid: 31472f376290f4002b0bef1188078af7, type: 3}
