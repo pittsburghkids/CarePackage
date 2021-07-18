@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LiftAudioBridge : MonoBehaviour
+public class AudioBridge : MonoBehaviour
 {
     [Header("Lift")]
     [SerializeField] AudioClip liftUp;
