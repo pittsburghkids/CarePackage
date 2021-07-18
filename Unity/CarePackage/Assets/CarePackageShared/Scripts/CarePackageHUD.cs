@@ -14,6 +14,8 @@ public class CarePackageHUD : MonoBehaviour
     private float fps;
     private bool hudActive = false;
 
+    private KeyCode guiKeyCode;
+
     Matrix4x4 matrix;
     Rect windowRect = new Rect(20, 20, 120, 50);
 
@@ -60,6 +62,11 @@ public class CarePackageHUD : MonoBehaviour
 
     void OnGUI()
     {
+        if (Event.current.type == EventType.KeyUp)
+        {
+            guiKeyCode = Event.current.keyCode;
+        }
+
         if (hudActive)
         {
             GUI.matrix = matrix;
@@ -94,12 +101,12 @@ public class CarePackageHUD : MonoBehaviour
             CarePackage.Instance.OnWebSocketReceived("{\"type\":\"encoder.change\",\"boardName\":\"LoaderAddressB\",\"destinationName\":\"House\"}");
         }
 
-        if (GUILayout.Button("Depot Set Next [A]ddress") || Input.GetKeyDown(KeyCode.A))
+        if (GUILayout.Button("Depot Set Next [A]ddress") || guiKeyCode == KeyCode.A)
         {
             CarePackage.Instance.OnWebSocketReceived("{\"type\":\"loader.address\",\"destinationName\":\"House\",\"boxName\":\"BoxA\"}");
         }
 
-        if (GUILayout.Button("Depot Set Next [I]tems") || Input.GetKeyDown(KeyCode.I))
+        if (GUILayout.Button("Depot Set Next [I]tems") || guiKeyCode == KeyCode.I)
         {
             CarePackage.Instance.OnWebSocketReceived("{\"type\":\"loader.insert\",\"itemName\":\"Basketball\",\"boxName\":\"BoxA\"}");
             CarePackage.Instance.OnWebSocketReceived("{\"type\":\"loader.insert\",\"itemName\":\"FourLeafClover\",\"boxName\":\"BoxA\"}");
@@ -107,20 +114,21 @@ public class CarePackageHUD : MonoBehaviour
             CarePackage.Instance.OnWebSocketReceived("{\"type\":\"loader.insert\",\"itemName\":\"Kite\",\"boxName\":\"BoxA\"}");
         }
 
-        if (GUILayout.Button("Depot Insert [T]op Box") || Input.GetKeyDown(KeyCode.T))
+        if (GUILayout.Button("Depot Insert [T]op Box") || guiKeyCode == KeyCode.T)
         {
             CarePackage.Instance.OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"DepotBoxB\",\"boxName\":\"BoxA\"}");
         }
 
-        if (GUILayout.Button("Depot Insert [S]ide Box") || Input.GetKeyDown(KeyCode.S))
+        if (GUILayout.Button("Depot Insert [S]ide Box") || guiKeyCode == KeyCode.S)
         {
             CarePackage.Instance.OnWebSocketReceived("{\"type\":\"tag.found\",\"boardName\":\"DepotBoxA\",\"boxName\":\"BoxA\"}");
         }
 
-        if (GUILayout.Button("[R]eload Scene") || Input.GetKeyDown(KeyCode.R))
+        if (GUILayout.Button("[R]eload Scene") || guiKeyCode == KeyCode.R)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
 
+        guiKeyCode = KeyCode.None;
     }
 }

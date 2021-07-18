@@ -217,7 +217,12 @@ public class CarePackageDepot : MonoBehaviour
         // Trigger grab if needed.
         if (carePackageDelivery.boardName == "DepotBoxB")
         {
-            CarePackageDepot.Instance.GrabberGrab();
+            Debug.Log("Grabber Trigger Frame:" + Time.frameCount);
+            //CarePackageDepot.Instance.GrabberGrab();
+
+            // Sync animations.
+            grabberAnimatorBridge.Animator.Play("GrabberGrab", -1, 0);
+            mover.animatorBridge.Animator.Play("MoverMove", -1, 0);
         }
 
         // Logging
@@ -243,10 +248,10 @@ public class CarePackageDepot : MonoBehaviour
 
     // Animation triggers.
 
-    public void GrabberGrab()
-    {
-        grabberAnimatorBridge.Animator.SetTrigger("Grab");
-    }
+    // public void GrabberGrab()
+    // {
+    //     grabberAnimatorBridge.Animator.SetTrigger("Grab");
+    // }
 
     public void LiftUp()
     {

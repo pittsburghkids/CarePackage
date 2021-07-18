@@ -37,18 +37,20 @@ public class Box : MonoBehaviour
         }
     }
 
-    public void Start() {
+    public void Start()
+    {
         audioSource = GetComponent<AudioSource>();
     }
 
-    public void Initialize() {
+    public void Initialize()
+    {
         mover.animatorBridge.OnAnimationBridgeEvent += (AnimationEvent animationEvent) =>
         {
             if (animationEvent.stringParameter == "MoverBoxHit")
             {
                 audioSource.PlayOneShot(boxHit);
             }
-        };        
+        };
     }
 
     // Called by the mover when its animation completes.
