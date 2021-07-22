@@ -57,6 +57,7 @@ public class Box : MonoBehaviour
     public void Open()
     {
         GetComponent<Animator>().SetTrigger("Open");
+        audioSource.PlayOneShot(boxHit);
     }
 
     // Called by DepotStamp during animation.
