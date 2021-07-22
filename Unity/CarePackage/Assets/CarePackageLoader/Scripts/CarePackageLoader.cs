@@ -46,6 +46,7 @@ public class CarePackageLoader : MonoBehaviour
 
     string currentBox = null;
     string currentDestination = null;
+    string currentItem = null;
 
     // Timeout handling to show instructions.
     private float lastActionTime = 0;
@@ -111,10 +112,12 @@ public class CarePackageLoader : MonoBehaviour
         }
     }
 
-    private void Update() {
+    private void Update()
+    {
         // Show loader instructions after timeout if we have a box and an address.
-        if (currentBox != null && currentDestination != null &&
-            Time.time - lastActionTime > lastActionTimeout ) {
+        if (currentBox != null && currentDestination != null && currentItem != null &&
+            Time.time - lastActionTime > lastActionTimeout)
+        {
             lastActionTime = Time.time;
             ShowInstructions(InstructionState.DeliverPackage);
         }
@@ -220,6 +223,7 @@ public class CarePackageLoader : MonoBehaviour
         Debug.Log("Box removed");
         currentBox = null;
         currentDestination = null;
+        currentItem = null;
 
         ShowInstructions(InstructionState.InsertBox);
 
@@ -253,6 +257,8 @@ public class CarePackageLoader : MonoBehaviour
 
         if (itemName != null)
         {
+            currentItem = itemName;
+
             GameObject itemInstance = Instantiate(itemPrefab, itemContainer);
 
             Sprite itemSprite = carePackage.GetSpriteForItemName(itemName);
