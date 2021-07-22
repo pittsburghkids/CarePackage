@@ -50,7 +50,7 @@ public class CarePackageLoader : MonoBehaviour
 
     // Timeout handling to show instructions.
     private float lastActionTime = 0;
-    private float lastActionTimeout = 7.5f;
+    private float lastActionTimeout = 5f;
 
     void Start()
     {
