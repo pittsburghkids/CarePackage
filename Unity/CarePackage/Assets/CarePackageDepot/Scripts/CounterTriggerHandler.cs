@@ -6,7 +6,7 @@ using TMPro;
 [RequireComponent(typeof(AudioSource))]
 public class CounterTriggerHandler : MonoBehaviour, ITriggerHandler
 {
-    private const float RejectDisplayDuration = 2;
+    private const float DisplayTimeout = 5;
 
     [SerializeField] GameObject countDisplay = default;
     [SerializeField] GameObject rejectDisplay = default;
@@ -19,6 +19,7 @@ public class CounterTriggerHandler : MonoBehaviour, ITriggerHandler
     private int deliveryCount = 0;
     private int lastDay = -1;
 
+    private Coroutine showCountRoutine = null;
     private AudioSource audioSource;
 
     void Start()
@@ -64,13 +65,26 @@ public class CounterTriggerHandler : MonoBehaviour, ITriggerHandler
 
             audioSource.PlayOneShot(errorClip);
         }
+
+        if (showCountRoutine != null) StopCoroutine(showCountRoutine);
+        showCountRoutine = StartCoroutine(ShowScanRoutine());
+
     }
 
-    public void OnTriggerExit(Collider collider)
+    private IEnumerator ShowScanRoutine()
     {
+        yield return new WaitForSeconds(DisplayTimeout);
+
         countDisplay.SetActive(true);
         rejectDisplay.SetActive(false);
 
         doorAnimator.SetBool("Open", false);
+
+        showCountRoutine = null;
+    }
+
+    public void OnTriggerExit(Collider collider)
+    {
+
     }
 }

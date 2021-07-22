@@ -6,7 +6,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(AudioSource))]
 public class ScannerTriggerHandler : MonoBehaviour, ITriggerHandler
 {
-    const float DisplayTimeout = 2;
+    const float DisplayTimeout = 5;
 
     [SerializeField] GameObject itemLayout = default;
     [SerializeField] GameObject errorDisplay = default;
