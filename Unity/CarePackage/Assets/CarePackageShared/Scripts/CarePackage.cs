@@ -380,18 +380,19 @@ public class CarePackage : MonoBehaviour
         if (destinationMap.ContainsKey(boxName)) { destinationMap[boxName] = null; }
     }
 
-    // public string GetRandomDestinationName()
-    // {
-    //     string destinationName = null;
+    public string GetRandomDestinationName()
+    {
+        string destinationName = null;
+        int destinationCount = spriteMapDestinations.Count - 1; // Ignore "Unkown";
 
-    //     if (spriteMapDestinations.Count > 0)
-    //     {
-    //         int spriteIndex = Random.Range(0, spriteMapDestinations.Count);
-    //         destinationName = spriteMapDestinations.ElementAt(spriteIndex).Key;
-    //     }
+        if (destinationCount > 0)
+        {
+            int spriteIndex = Random.Range(0, destinationCount);
+            destinationName = spriteMapDestinations.ElementAt(spriteIndex).Key;
+        }
 
-    //     return destinationName;
-    // }
+        return destinationName;
+    }
 
     // public List<string> GetRandomItemNameList(int count)
     // {

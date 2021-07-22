@@ -182,6 +182,9 @@ public class CarePackageDepot : MonoBehaviour
         // Set destination for box.
         if (carePackageData.type == "loader.address" && carePackageData.destinationName != null && carePackageData.boxName != null)
         {
+            if (carePackageData.destinationName == "Unknown") {
+                carePackageData.destinationName = CarePackage.Instance.GetRandomDestinationName();
+            }
             carePackage.SetBoxDestination(carePackageData.boxName, carePackageData.destinationName);
         }
 

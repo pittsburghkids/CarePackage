@@ -103,7 +103,7 @@ public class CarePackageHUD : MonoBehaviour
 
         if (GUILayout.Button("Depot Set Next [A]ddress") || guiKeyCode == KeyCode.A)
         {
-            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"loader.address\",\"destinationName\":\"House\",\"boxName\":\"BoxA\"}");
+            CarePackage.Instance.OnWebSocketReceived("{\"type\":\"loader.address\",\"destinationName\":\"Unknown\",\"boxName\":\"BoxA\"}");
         }
 
         if (GUILayout.Button("Depot Set Next [I]tems") || guiKeyCode == KeyCode.I)
